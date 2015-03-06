@@ -1,0 +1,4 @@
+# Procedural Map Generator
+
+Build maps using code and a simple viewer to see the outcome.
+
