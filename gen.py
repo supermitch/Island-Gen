@@ -14,10 +14,29 @@ def render(map):
     surf.fill(BG_COLOR)
     pygame.display.flip()
 
+def get_input():
+    """ Wait for input. """
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            terminate()
+        elif event.type == KEYDOWN:
+            if event.key in (K_q, K_ESCAPE):
+                terminate()
+            elif event.key == K_SPACE:
+                # TODO: regenerate planet
+                pass
+
+def terminate():
+    pygame.quit()
+    sys.exit()
+
 def main():
     print('Pyland Gen 1.0')
+    pygame.init()
     map = gen_map()
     render(map)
+    get_input()
+
 
 if __name__ == '__main__':
     main()
