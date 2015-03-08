@@ -9,22 +9,28 @@ def gen_map(width=500, height=500):
     map = [[None for x in range(width)] for y in range(height)]
     for row in range(height):
         for col in range(width):
-            map[row][col] = random.randint(1, 255)
+            # Choose a random color, for now
+            map[row][col] = (random.randint(0, 255), random.randint(0, 255),
+                             random.randint(0, 255))
     return map
 
 def render(map):
-    BG_COLOR = (00, 00, 00)
     screen_size = len(map), len(map[0])
     surf = pygame.display.set_mode(screen_size, RESIZABLE)
+
     pygame.display.set_caption('Pyland Gen 1.0')
+
+    BG_COLOR = (00, 00, 00)
     surf.fill(BG_COLOR)
-    for i, row in enumerate(map):
-        for j, col in enumerate(row):
-            px = pygame.Surface((1, 1))
-            shade = map[i][j]
-            color = (shade, shade, shade)
+
+    # Draw tiles
+    for i in range(screen_size[0]):
+        for j in range(screen_size[1]):
+            size = (3, 3)
+            px = pygame.Surface(size)
+            color = map[i][j]
             px.fill(color)
-            pos = i, j
+            pos = (i * size[0], j * size[1])
             surf.blit(px, pos)
 
     pygame.display.flip()
