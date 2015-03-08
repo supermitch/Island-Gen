@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 from pygame.locals import *
 
@@ -35,7 +37,8 @@ def main():
     pygame.init()
     map = gen_map()
     render(map)
-    get_input()
+    while True:
+        get_input()
 
 
 if __name__ == '__main__':
