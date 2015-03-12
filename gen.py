@@ -11,12 +11,13 @@ def gen_border():
     """ Generate a border to apply to our island to build shoreline. """
     points = 360
     span = 5.0
-    octaves = 1
-    base = 0
+    octaves = 3
+    base = random.randint(0, 500)
     border = []
     for i in range(points):
         x = float(i) * span / points
-        y = pnoise1(x + base, octaves)
+        y = pnoise1(x + base, octaves) * 1.5
+        y += pnoise1(x + base, octaves + 4) * 5
         border.append((i, y))
     print(len(border))
     return border
@@ -25,9 +26,8 @@ def gen_shore(border, radius=300, scale=75):
     """ Apply our border to our island. """
     radii = (radius + y * scale for _, y in border)
     angles = (x * math.pi / 180.0 for x, _ in border)
-    points = [(radius * math.cos(theta), radius * math.sin(theta)) \
-             for radius, theta in zip(radii, angles)]
-    return points
+    return [(radius * math.cos(theta) + 400, radius * math.sin(theta) + 400) \
+            for radius, theta in zip(radii, angles)]
 
 def gen_random_map(width=500, height=500):
     """ Returns a map of width x height tiles. """
@@ -40,7 +40,7 @@ def gen_random_map(width=500, height=500):
                              random.randint(0, 255))
     return map
 
-def setup_screen(screen_size=(500, 500)):
+def setup_screen(screen_size=(900, 900)):
     surf = pygame.display.set_mode(screen_size, RESIZABLE)
 
     pygame.display.set_caption('Pyland Gen 1.0')
@@ -53,8 +53,8 @@ def setup_screen(screen_size=(500, 500)):
 def render_island(surf, points):
     """ Renders and aaline of a series of points. """
     color = (200, 200, 100)
-    pygame.draw.aalines(surf, color, True, points)
-    return None
+    pygame.draw.aalines(surf, color, True, points, False)
+    pygame.display.flip()
 
 def render():
     # Draw tiles
@@ -67,7 +67,6 @@ def render():
             pos = (i * size[0], j * size[1])
             surf.blit(px, pos)
 
-    pygame.display.flip()
 
 def get_input():
     """ Wait for input. """
@@ -91,7 +90,10 @@ def main():
     border = gen_border()
     point_list = gen_shore(border)
     surface = setup_screen()
+
     render_island(surface, point_list)
+
+
     print('waiting for input')
 
     while True:
