@@ -40,8 +40,7 @@ def gen_random_map(width=500, height=500):
                              random.randint(0, 255))
     return map
 
-def render(map):
-    screen_size = len(map), len(map[0])
+def setup_screen(screen_size=(500, 500)):
     surf = pygame.display.set_mode(screen_size, RESIZABLE)
 
     pygame.display.set_caption('Pyland Gen 1.0')
@@ -49,6 +48,15 @@ def render(map):
     BG_COLOR = (00, 00, 00)
     surf.fill(BG_COLOR)
 
+    return surf
+
+def render_island(surf, points):
+    """ Renders and aaline of a series of points. """
+    color = (200, 200, 100)
+    pygame.draw.aalines(surf, color, True, points)
+    return None
+
+def render():
     # Draw tiles
     for i in range(screen_size[0]):
         for j in range(screen_size[1]):
@@ -82,8 +90,10 @@ def main():
     pygame.init()
     border = gen_border()
     point_list = gen_shore(border)
-    map = gen_random_map()
-    render(map)
+    surface = setup_screen()
+    render_island(surface, point_list)
+    print('waiting for input')
+
     while True:
         get_input()
 
