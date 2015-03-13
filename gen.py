@@ -10,7 +10,7 @@ from pygame.locals import *
 def gen_border():
     """ Generate a border to apply to our island to build shoreline. """
     points = 360
-    span = 5.0
+    span = 8.0
     octaves = 3
     base = random.randint(0, 500)
     border = []
@@ -67,6 +67,20 @@ def render():
             pos = (i * size[0], j * size[1])
             surf.blit(px, pos)
 
+def flood_fill(surf):
+    screen_size = surf.get_size()
+    center_x, center_y = screen_size[0]/2, screen_size[1]/2
+
+    start_color = surf.get_at((center_x, center_y))
+    print(start_color)
+    seen = []
+    WHITE = (255, 255, 255, 255)
+    for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+        x, y = center_x + dx, center_y + dy
+        surf.set_at((x, y), WHITE)
+        if surf.get_at((x, y)) == start_color:
+            pass
+
 
 def get_input():
     """ Wait for input. """
@@ -92,6 +106,7 @@ def main():
     surface = setup_screen()
 
     render_island(surface, point_list)
+    flood_fill(surface)
 
 
     print('waiting for input')
