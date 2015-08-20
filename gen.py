@@ -45,18 +45,15 @@ def gen_random_map(width=500, height=500):
 
 def setup_screen(screen_size=(900, 900)):
     surf = pygame.display.set_mode(screen_size, RESIZABLE)
-
     pygame.display.set_caption('Pyland Gen 1.0')
-
-    BG_COLOR = (00, 00, 00)
-    surf.fill(BG_COLOR)
-
     return surf
 
 
 def render_island(surf, points):
     """ Renders and aaline of a series of points. """
     color = (200, 200, 100)
+    BG_COLOR = (0, 0, 0)
+    surf.fill(BG_COLOR)
     pygame.draw.aalines(surf, color, True, points, False)
     pygame.display.flip()
 
@@ -91,29 +88,30 @@ def get_input():
     """ Wait for input. """
     for event in pygame.event.get():
         if event.type == QUIT:
-            pygame.quit()
-            sys.exit()
+            return 'quit'
         elif event.type == KEYDOWN:
             if event.key in (K_q, K_ESCAPE):
-                pygame.quit()
-                sys.exit()
+                return 'quit'
             elif event.key == K_SPACE:
-                # TODO: regenerate planet
-                pass
+                return 'regen'
 
 
 def main():
     print('Pyland Gen 1.0')
     pygame.init()
-    border = gen_border()
-    point_list = gen_shore(border)
     surface = setup_screen()
-    render_island(surface, point_list)
-    flood_fill(surface)
 
-    print('Waiting for input')
+    result = 'regen'
     while True:
-        get_input()
+        if result == 'quit':
+            pygame.quit()
+            sys.exit()
+        elif result == 'regen':
+            border = gen_border()
+            point_list = gen_shore(border)
+            render_island(surface, point_list)
+            flood_fill(surface)
+        result = get_input()
 
 
 if __name__ == '__main__':
