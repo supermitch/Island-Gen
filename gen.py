@@ -76,7 +76,6 @@ def render():
 def flood_fill(surf):
     screen_size = surf.get_size()
     center_x, center_y = screen_size[0]/2, screen_size[1]/2
-
     start_color = surf.get_at((center_x, center_y))
     print(start_color)
     seen = []
@@ -92,18 +91,15 @@ def get_input():
     """ Wait for input. """
     for event in pygame.event.get():
         if event.type == QUIT:
-            terminate()
+            pygame.quit()
+            sys.exit()
         elif event.type == KEYDOWN:
             if event.key in (K_q, K_ESCAPE):
-                terminate()
+                pygame.quit()
+                sys.exit()
             elif event.key == K_SPACE:
                 # TODO: regenerate planet
                 pass
-
-
-def terminate():
-    pygame.quit()
-    sys.exit()
 
 
 def main():
@@ -112,7 +108,6 @@ def main():
     border = gen_border()
     point_list = gen_shore(border)
     surface = setup_screen()
-
     render_island(surface, point_list)
     flood_fill(surface)
 
