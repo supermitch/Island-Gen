@@ -42,10 +42,10 @@ def gen_border():
 
 def gen_shore(border, radius=200, scale=40):
     """ Apply our border to our island. """
-    radii = (radius + y * scale for _, y in border)
-    angles = (x * math.pi / 180.0 for x, _ in border)
-    return [(radius * math.cos(theta) + 400, radius * math.sin(theta) + 400) \
-            for radius, theta in zip(radii, angles)]
+    radii = (radius + y * scale for _, y in border)  # Adjust radii
+    angles = (x * math.pi / 180.0 for x, _ in border)  # Convert to radians
+    return [(r * math.cos(theta) + 450, r * math.sin(theta) + 450) \
+            for r, theta in zip(radii, angles)]  # To rectangular coords
 
 
 def gen_random_map(width=500, height=500):
