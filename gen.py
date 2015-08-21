@@ -7,8 +7,26 @@ from pygame.locals import *
 from noise import pnoise1, pnoise2, snoise2
 
 
+BEIGE = (200, 200, 100)
+BLACK = (  0,   0,   0)
+BLUE  = (  0,   0, 200)
+GREEN = (  0, 255,   0)
+RED   = (255,   0,   0)
+WHITE = (255, 255, 255)
+
+
+def setup_screen(screen_size=(900, 900)):
+    surf = pygame.display.set_mode(screen_size, RESIZABLE)
+    pygame.display.set_caption('Pyland Gen 1.0')
+    return surf
+
+
 def gen_border():
-    """ Generate a border to apply to our island to build shoreline. """
+    """
+    Generate a border to apply to our island to build shoreline.
+
+    Returns a list of (x, y) points of generated pnoise.
+    """
     points = 360
     span = 8.0
     octaves = 3
@@ -19,11 +37,10 @@ def gen_border():
         y = pnoise1(x + base, octaves) * 1.5
         y += pnoise1(x + base, octaves + 4) * 5
         border.append((i, y))
-    print(len(border))
     return border
 
 
-def gen_shore(border, radius=300, scale=75):
+def gen_shore(border, radius=200, scale=40):
     """ Apply our border to our island. """
     radii = (radius + y * scale for _, y in border)
     angles = (x * math.pi / 180.0 for x, _ in border)
@@ -43,18 +60,15 @@ def gen_random_map(width=500, height=500):
     return map
 
 
-def setup_screen(screen_size=(900, 900)):
-    surf = pygame.display.set_mode(screen_size, RESIZABLE)
-    pygame.display.set_caption('Pyland Gen 1.0')
-    return surf
+def render_island(surf, points, radius):
+    """ Renders an aaline of a series of points. """
+    surf.fill(BLACK)
+    pygame.draw.circle(surf, RED, (450, 450), radius, 1)  # Original centre
 
+    pygame.draw.aalines(surf, BEIGE, True, points, False)  # Island shore
+    for point in points:  # Data points
+        pygame.draw.circle(surf, GREEN, (int(point[0]), int(point[1])), 2)
 
-def render_island(surf, points):
-    """ Renders and aaline of a series of points. """
-    color = (200, 200, 100)
-    BG_COLOR = (0, 0, 0)
-    surf.fill(BG_COLOR)
-    pygame.draw.aalines(surf, color, True, points, False)
     pygame.display.flip()
 
 
@@ -74,7 +88,6 @@ def flood_fill(surf):
     screen_size = surf.get_size()
     center_x, center_y = screen_size[0]/2, screen_size[1]/2
     start_color = surf.get_at((center_x, center_y))
-    print(start_color)
     seen = []
     WHITE = (255, 255, 255, 255)
     for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
@@ -101,6 +114,7 @@ def main():
     pygame.init()
     surface = setup_screen()
 
+    radius = 200
     result = 'regen'
     while True:
         if result == 'quit':
@@ -108,8 +122,8 @@ def main():
             sys.exit()
         elif result == 'regen':
             border = gen_border()
-            point_list = gen_shore(border)
-            render_island(surface, point_list)
+            point_list = gen_shore(border, radius=radius)
+            render_island(surface, point_list, radius)
             flood_fill(surface)
         result = get_input()
 
