@@ -112,11 +112,13 @@ def get_input():
 def main():
     print('Pyland Gen 1.0')
     pygame.init()
+    clock = pygame.time.Clock()
     surface = setup_screen()
 
     radius = 200
     result = 'regen'
     while True:
+        clock.tick(10)
         if result == 'quit':
             pygame.quit()
             sys.exit()
