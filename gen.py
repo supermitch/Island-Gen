@@ -22,22 +22,31 @@ def setup_screen(screen_size=(900, 900)):
     return surf
 
 
-def gen_border(span=8.0, octaves=8, scale=40):
-    """
-    Generate a border to apply to our island to build shoreline.
+class IslandGenerator():
+    """ Generates a random graph of noise. (Not really an Island) """
+    def __init__(self):
+        """ Initialize some pnoise generator defaults. """
+        self.span = 8.0
+        self.octaves = 8
+        self.scale = 40
 
-    Returns a list of (x, y) points of generated pnoise.
-    """
-    points = 360
-    base = random.randint(0, 500)
-    border = []
-    for i in range(points):
-        x = float(i) * span / points
-        y = pnoise1(x + base, octaves) * 1.5
-        y += pnoise1(x + base, octaves + 4) * 4
-        y *= scale
-        border.append((i, y))
-    return border
+    def gen_border(self):
+        """
+        Generate a border to apply to our island to build shoreline.
+
+        Returns a list of (x, y) points of generated pnoise.
+        """
+        points = 360
+        base = random.randint(0, 500)
+        border = []
+        for i in range(points):
+            x = float(i) * self.span / points
+            y = pnoise1(x + base, self.octaves) * 1.5
+            y += pnoise1(x + base, self.octaves + 4) * 4
+            y *= self.scale
+            border.append((i, y))
+        return border
+
 
 
 def scale_to_polar(border, radius=200):
@@ -90,7 +99,13 @@ def get_input():
         if event.type == QUIT:
             return 'quit'
         elif event.type == KEYDOWN:
-            if event.key in (K_q, K_ESCAPE):
+            if event.key == (K_s):
+                return 'span'
+            elif event.key == (K_o):
+                return 'octaves'
+            elif event.key == (K_c):
+                return 'scale'
+            elif event.key in (K_q, K_ESCAPE):
                 return 'quit'
             elif event.key == K_SPACE:
                 return 'regen'
@@ -102,6 +117,7 @@ def main():
     clock = pygame.time.Clock()
     surface = setup_screen()
 
+    generator = IslandGenerator()
     radius = 200
     result = 'regen'
     while True:
@@ -110,9 +126,18 @@ def main():
         if result == 'quit':
             pygame.quit()
             sys.exit()
-        elif result == 'regen':
+        elif result == 'span':
+            generator.span += 1
+            result = 'regen'
+        elif result == 'scale':
+            generator.scale += 1
+            result = 'regen'
+        elif result == 'octaves':
+            generator.octaves += 1
+            result = 'regen'
+        if result == 'regen':
             surface.fill(BLACK)
-            border = gen_border(span=8.0, octaves=8, scale=40)  # Generate random noise
+            border = generator.gen_border()  # Generate random noise
             render_border(surface, border)  # Draw it
 
             polar_coords = scale_to_polar(border, radius=radius)  # Wrap it around a circle
