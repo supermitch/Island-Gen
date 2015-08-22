@@ -41,8 +41,8 @@ class IslandGenerator():
         border = []
         for i in range(points):
             x = float(i) * self.span / points
-            y = pnoise1(x + base, self.octaves) * 1.5
-            y += pnoise1(x + base, self.octaves + 4) * 4
+            y = pnoise1(x + base, self.octaves) * 1
+            y += pnoise1(x + base, self.octaves + 4) * 2
             y *= self.scale
             border.append((i, y))
         return border
@@ -130,7 +130,7 @@ def main():
             generator.span += 1
             result = 'regen'
         elif result == 'scale':
-            generator.scale += 1
+            generator.scale += 10
             result = 'regen'
         elif result == 'octaves':
             generator.octaves += 1
