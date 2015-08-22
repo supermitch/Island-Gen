@@ -64,10 +64,13 @@ def render_island(surf, coords, radius):
 
 def render_border(surf, points):
     """ Renders an aaline of a series of points. """
-    for x, y in points:  # Data points
-        x += 50
-        y += 800
-        pygame.draw.circle(surf, BLUE, (int(x), int(y)), 1)
+    point_list = [(x + 50, y + 800) for x, y in points]
+    pygame.draw.line(surf, BLUE, (50, 800), (410, 800), 1)  # x-axis
+    pygame.draw.line(surf, BLUE, (50, 800), (50, 700), 1)  # y-axis
+
+    pygame.draw.lines(surf, WHITE, False, point_list, 1)
+    for x, y in point_list:  # points
+        pygame.draw.circle(surf, RED, (int(x), int(y)), 1)
 
 
 def flood_fill(surf):
