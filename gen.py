@@ -29,7 +29,7 @@ def gen_border():
     """
     points = 360
     span = 8.0
-    octaves = 3
+    octaves = 8
     base = random.randint(0, 500)
     border = []
     for i in range(points):
@@ -48,18 +48,6 @@ def gen_shore(border, radius=200, scale=40):
             for r, theta in zip(radii, angles)]  # To rectangular coords
 
 
-def gen_random_map(width=500, height=500):
-    """ Returns a map of width x height tiles. """
-    # Initialize map to matrix of None
-    map = [[None for x in range(width)] for y in range(height)]
-    for row in range(height):
-        for col in range(width):
-            # Random R, G & B
-            map[row][col] = (random.randint(0, 255), random.randint(0, 255),
-                             random.randint(0, 255))
-    return map
-
-
 def render_island(surf, points, radius):
     """ Renders an aaline of a series of points. """
     surf.fill(BLACK)
@@ -67,21 +55,9 @@ def render_island(surf, points, radius):
 
     pygame.draw.aalines(surf, BEIGE, True, points, False)  # Island shore
     for point in points:  # Data points
-        pygame.draw.circle(surf, GREEN, (int(point[0]), int(point[1])), 2)
+        pygame.draw.circle(surf, GREEN, (int(point[0]), int(point[1])), 1)
 
     pygame.display.flip()
-
-
-def render():
-    # Draw tiles
-    for i in range(screen_size[0]):
-        for j in range(screen_size[1]):
-            size = (3, 3)
-            px = pygame.Surface(size)
-            color = map[i][j]
-            px.fill(color)
-            pos = (i * size[0], j * size[1])
-            surf.blit(px, pos)
 
 
 def flood_fill(surf):
