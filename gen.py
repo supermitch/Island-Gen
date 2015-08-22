@@ -30,19 +30,21 @@ def gen_border():
     points = 360
     span = 8.0
     octaves = 8
+    scale = 40
     base = random.randint(0, 500)
     border = []
     for i in range(points):
         x = float(i) * span / points
         y = pnoise1(x + base, octaves) * 1.5
         y += pnoise1(x + base, octaves + 4) * 5
+        y *= scale
         border.append((i, y))
     return border
 
 
-def scale_to_polar(border, radius=200, scale=40):
+def scale_to_polar(border, radius=200):
     """ Apply our border to our island. """
-    radii = (radius + y * scale for _, y in border)  # Adjust radii
+    radii = (radius + y for _, y in border)  # Adjust radii
     angles = (x * math.pi / 180.0 for x, _ in border)  # Convert to radians
     return zip(radii, angles)
 
