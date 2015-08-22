@@ -7,12 +7,13 @@ from pygame.locals import *
 from noise import pnoise1, pnoise2, snoise2
 
 
-BEIGE = (200, 200, 100)
-BLACK = (  0,   0,   0)
-BLUE  = (  0,   0, 200)
-GREEN = (  0, 255,   0)
-RED   = (255,   0,   0)
-WHITE = (255, 255, 255)
+BEIGE  = (200, 200, 100)
+BLACK  = (  0,   0,   0)
+BLUE   = (  0,   0, 200)
+GREEN  = (  0, 255,   0)
+RED    = (255,   0,   0)
+WHITE  = (255, 255, 255)
+CYAN = (  0, 255, 255)
 
 
 def setup_screen(screen_size=(900, 900)):
@@ -64,9 +65,9 @@ def render_island(surf, coords, radius):
 
 def render_border(surf, points):
     """ Renders an aaline of a series of points. """
-    point_list = [(x + 50, y + 800) for x, y in points]
-    pygame.draw.line(surf, BLUE, (50, 800), (410, 800), 1)  # x-axis
-    pygame.draw.line(surf, BLUE, (50, 800), (50, 700), 1)  # y-axis
+    point_list = [(x + 50, -y + 800) for x, y in points]  # Up is -ve
+    pygame.draw.line(surf, CYAN, (50, 800), (410, 800), 1)  # x-axis
+    pygame.draw.line(surf, CYAN, (50, 800), (50, 700), 1)  # y-axis
 
     pygame.draw.lines(surf, WHITE, False, point_list, 1)
     for x, y in point_list:  # points
