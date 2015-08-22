@@ -97,18 +97,18 @@ def get_input():
     """ Wait for input. """
     for event in pygame.event.get():
         if event.type == QUIT:
-            return 'quit'
+            return 'quit', None
         elif event.type == KEYDOWN:
             if event.key == (K_s):
-                return 'span'
+                return 'span', pygame.KMOD_LSHIFT
             elif event.key == (K_o):
-                return 'octaves'
+                return 'octaves', pygame.KMOD_LSHIFT
             elif event.key == (K_c):
-                return 'scale'
+                return 'scale', pygame.KMOD_LSHIFT
             elif event.key in (K_q, K_ESCAPE):
-                return 'quit'
+                return 'quit', None
             elif event.key == K_SPACE:
-                return 'regen'
+                return 'regen', None
 
 
 def main():
@@ -130,7 +130,10 @@ def main():
             generator.span += 1
             result = 'regen'
         elif result == 'scale':
-            generator.scale += 10
+            if shifted:
+                generator.scale += 10
+            else:
+                generator.scale -= 10
             result = 'regen'
         elif result == 'octaves':
             generator.octaves += 1
@@ -148,6 +151,9 @@ def main():
             pygame.display.flip()
 
         result = get_input()
+        if result and len(result) > 1:
+            result, shifted = result
+            print(shifted)
 
 
 if __name__ == '__main__':
