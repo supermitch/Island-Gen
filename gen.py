@@ -22,22 +22,19 @@ def setup_screen(screen_size=(900, 900)):
     return surf
 
 
-def gen_border():
+def gen_border(span=8.0, octaves=8, scale=40):
     """
     Generate a border to apply to our island to build shoreline.
 
     Returns a list of (x, y) points of generated pnoise.
     """
     points = 360
-    span = 8.0
-    octaves = 8
-    scale = 40
     base = random.randint(0, 500)
     border = []
     for i in range(points):
         x = float(i) * span / points
         y = pnoise1(x + base, octaves) * 1.5
-        y += pnoise1(x + base, octaves + 4) * 5
+        y += pnoise1(x + base, octaves + 4) * 4
         y *= scale
         border.append((i, y))
     return border
@@ -115,7 +112,7 @@ def main():
             sys.exit()
         elif result == 'regen':
             surface.fill(BLACK)
-            border = gen_border()  # Generate random noise
+            border = gen_border(span=8.0, octaves=8, scale=40)  # Generate random noise
             render_border(surface, border)  # Draw it
 
             polar_coords = scale_to_polar(border, radius=radius)  # Wrap it around a circle
