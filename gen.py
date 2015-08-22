@@ -40,24 +40,32 @@ def gen_border():
     return border
 
 
-def gen_shore(border, radius=200, scale=40):
+def scale_to_polar(border, radius=200, scale=40):
     """ Apply our border to our island. """
     radii = (radius + y * scale for _, y in border)  # Adjust radii
     angles = (x * math.pi / 180.0 for x, _ in border)  # Convert to radians
+    return zip(radii, angles)
+
+
+def polar_to_rectangular(polar_coords):
     return [(r * math.cos(theta) + 450, r * math.sin(theta) + 450) \
-            for r, theta in zip(radii, angles)]  # To rectangular coords
+            for r, theta in polar_coords]  # To rectangular coords
 
 
-def render_island(surf, points, radius):
+def render_island(surf, coords, radius):
     """ Renders an aaline of a series of points. """
-    surf.fill(BLACK)
     pygame.draw.circle(surf, RED, (450, 450), radius, 1)  # Original centre
-
-    pygame.draw.aalines(surf, BEIGE, True, points, False)  # Island shore
-    for point in points:  # Data points
+    pygame.draw.aalines(surf, BEIGE, True, coords, False)  # Island shore
+    for point in coords:  # Data points
         pygame.draw.circle(surf, GREEN, (int(point[0]), int(point[1])), 1)
 
-    pygame.display.flip()
+
+def render_border(surf, points):
+    """ Renders an aaline of a series of points. """
+    for x, y in points:  # Data points
+        x += 50
+        y += 800
+        pygame.draw.circle(surf, BLUE, (int(x), int(y)), 1)
 
 
 def flood_fill(surf):
@@ -95,14 +103,22 @@ def main():
     result = 'regen'
     while True:
         clock.tick(10)
+
         if result == 'quit':
             pygame.quit()
             sys.exit()
         elif result == 'regen':
-            border = gen_border()
-            point_list = gen_shore(border, radius=radius)
-            render_island(surface, point_list, radius)
-            flood_fill(surface)
+            surface.fill(BLACK)
+            border = gen_border()  # Generate random noise
+            render_border(surface, border)  # Draw it
+
+            polar_coords = scale_to_polar(border, radius=radius)  # Wrap it around a circle
+            rect_coords = polar_to_rectangular(polar_coords)  # Conver to (x, y)
+            render_island(surface, rect_coords, radius)  # Graph island
+
+            flood_fill(surface)  # Fill Island w/ color
+            pygame.display.flip()
+
         result = get_input()
 
 
