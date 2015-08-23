@@ -99,14 +99,13 @@ def get_input():
         if event.type == QUIT:
             return 'quit', None
         elif event.type == KEYDOWN:
+            shift = bool(pygame.key.get_mods() & pygame.KMOD_LSHIFT)
             if event.key == (K_s):
-                print('shift mod s')
-                print(pygame.key.get_mods() & pygame.KMOD_LSHIFT)
-                return 'span', pygame.KMOD_LSHIFT
+                return 'span', shift
             elif event.key == (K_o):
-                return 'octaves', pygame.KMOD_LSHIFT
+                return 'octaves', shift
             elif event.key == (K_c):
-                return 'scale', pygame.KMOD_LSHIFT
+                return 'scale', shift
             elif event.key in (K_q, K_ESCAPE):
                 return 'quit', None
             elif event.key == K_SPACE:
