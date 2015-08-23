@@ -100,6 +100,8 @@ def get_input():
             return 'quit', None
         elif event.type == KEYDOWN:
             if event.key == (K_s):
+                print('shift mod s')
+                print(pygame.key.get_mods() & pygame.KMOD_LSHIFT)
                 return 'span', pygame.KMOD_LSHIFT
             elif event.key == (K_o):
                 return 'octaves', pygame.KMOD_LSHIFT
