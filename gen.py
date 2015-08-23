@@ -128,16 +128,16 @@ def main():
             pygame.quit()
             sys.exit()
         elif result == 'span':
-            generator.span += 1
+            sign = +1 if shifted else -1
+            generator.span += sign * 1
             result = 'regen'
         elif result == 'scale':
-            if shifted:
-                generator.scale += 10
-            else:
-                generator.scale -= 10
+            sign = +1 if shifted else -1
+            generator.scale += sign * 10
             result = 'regen'
         elif result == 'octaves':
-            generator.octaves += 1
+            sign = +1 if shifted else -1
+            generator.octaves += sign * 1
             result = 'regen'
         if result == 'regen':
             surface.fill(BLACK)
@@ -154,7 +154,6 @@ def main():
         result = get_input()
         if result and len(result) > 1:
             result, shifted = result
-            print(shifted)
 
 
 if __name__ == '__main__':
