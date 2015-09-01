@@ -83,16 +83,19 @@ def render_border(surf, points):
 
 
 def flood_fill(surf):
+    print('Flood filling')
     screen_size = surf.get_size()
     center_x, center_y = screen_size[0]/2, screen_size[1]/2
-    start_color = surf.get_at((center_x, center_y))
-    seen = []
+    print(center_x, center_y)
+    start_color = surf.get_at((center_x, center_y))  # Black
+    seen = set()
+    neighbours = set()
     WHITE = (255, 255, 255, 255)
-    for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+    for dx, dy in [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]:  # Check 4 neighbours
         x, y = center_x + dx, center_y + dy
-        surf.set_at((x, y), WHITE)
         if surf.get_at((x, y)) == start_color:
-            pass
+            surf.set_at((x, y), WHITE)  # Set color to white
+            seen.add((x, y))
 
 
 def get_input():
