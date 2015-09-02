@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import itertools
 import math
 import random
 import sys
@@ -84,18 +85,33 @@ def render_border(surf, points):
 
 def flood_fill(surf):
     print('Flood filling')
+    WHITE = (255, 255, 255, 255)
     screen_size = surf.get_size()
     center_x, center_y = screen_size[0]/2, screen_size[1]/2
-    print(center_x, center_y)
     start_color = surf.get_at((center_x, center_y))  # Black
     seen = set()
-    neighbours = set()
-    WHITE = (255, 255, 255, 255)
-    for dx, dy in [(0, 0), (1, 0), (-1, 0), (0, 1), (0, -1)]:  # Check 4 neighbours
-        x, y = center_x + dx, center_y + dy
-        if surf.get_at((x, y)) == start_color:
-            surf.set_at((x, y), WHITE)  # Set color to white
-            seen.add((x, y))
+    start = (center_x, center_y)
+    stack = [start]
+    neighbours = list(itertools.product([0, 1, -1], repeat=2))
+    while True:
+        if not stack:
+            break
+        adjacent = False
+        for dx, dy in [(0, 1)]:  # Check 8 neighbours (and self)
+            if dx == 0 and dy == 0:
+                continue
+            x, y = start[0] + dx, start[1] + dy
+            if (x, y) in seen:
+                continue
+            else:
+                adjacent = True
+                if surf.get_at((x, y)) == start_color:
+                    stack.append((x, y))
+                    surf.set_at((x, y), WHITE)  # Set color to white
+                    seen.add((x, y))
+        if not adjacent:
+            stack.pop()
+        start = stack[-1]
 
 
 def get_input():
