@@ -94,24 +94,23 @@ def flood_fill(surf):
     stack = [start]
     neighbours = list(itertools.product([0, 1, -1], repeat=2))
     while True:
-        if not stack:
-            break
-        adjacent = False
-        for dx, dy in [(0, 1)]:  # Check 8 neighbours (and self)
-            if dx == 0 and dy == 0:
-                continue
+        adjacent = False  # Has no adjacent unvisited pixels
+        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:  # Check 4 neighbours
             x, y = start[0] + dx, start[1] + dy
             if (x, y) in seen:
                 continue
             else:
-                adjacent = True
                 if surf.get_at((x, y)) == start_color:
+                    adjacent = True
                     stack.append((x, y))
                     surf.set_at((x, y), WHITE)  # Set color to white
                     seen.add((x, y))
         if not adjacent:
             stack.pop()
-        start = stack[-1]
+        if not stack:
+            break
+        else:
+            start = stack[-1]
 
 
 def get_input():
