@@ -14,6 +14,7 @@ BEIGE  = (200, 200, 100)
 BLACK  = (  0,   0,   0)
 BLUE   = (  0,   0, 200)
 GREEN  = (  0, 255,   0)
+YELLOW  = (255, 255,   0)
 RED    = (255,   0,   0)
 WHITE  = (255, 255, 255)
 CYAN = (  0, 255, 255)
@@ -50,6 +51,14 @@ class IslandGenerator():
             border.append((i, y))
         return border
 
+    def define_peak(self, scale=50):
+        alpha = 4.0
+        theta = 1.0
+        beta = 1.0 / theta
+        var = random.gammavariate(alpha, beta)
+        radius= var * scale
+        angle = random.randint(0, 360)  # Random orientation
+        return (radius, angle)
 
 
 def scale_to_polar(border, radius=200):
@@ -72,6 +81,10 @@ def render_island(surf, coords, radius):
     for point in coords:  # Data points
         pygame.draw.circle(surf, GREEN, (int(point[0]), int(point[1])), 1)
 
+
+def render_peak(surf, polar):
+    pos = polar_to_rectangular([polar])[0]
+    pygame.draw.circle(surf, YELLOW, pos, 3, 1)  # Peak centre
 
 def render_border(surf, points):
     """ Renders an aaline of a series of points. """
@@ -161,6 +174,7 @@ def main():
             generator.octaves += sign * 1
             result = 'regen'
         if result == 'regen':
+            peak = generator.define_peak()
             surface.fill(BLACK)
             border = generator.gen_border()  # Generate random noise
             render_border(surface, border)  # Draw it
@@ -168,8 +182,9 @@ def main():
             polar_coords = scale_to_polar(border, radius=radius)  # Wrap it around a circle
             rect_coords = polar_to_rectangular(polar_coords)  # Conver to (x, y)
             render_island(surface, rect_coords, radius)  # Graph island
+            render_peak(surface, peak)
 
-            flood_fill(surface)  # Fill Island w/ color
+            # flood_fill(surface)  # Fill Island w/ color
             pygame.display.flip()
 
         result = get_input()
