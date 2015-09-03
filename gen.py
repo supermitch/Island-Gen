@@ -59,8 +59,9 @@ def scale_to_polar(border, radius=200):
     return zip(radii, angles)
 
 
-def polar_to_rectangular(polar_coords):
-    return [(r * math.cos(theta) + 450, r * math.sin(theta) + 450) \
+def polar_to_rectangular(polar_coords, offset_x=450, offset_y=450):
+    # TODO: Just do the calc on one goddamn tuple, not a list. Jesus.
+    return [(int(r * math.cos(theta) + offset_x), int(r * math.sin(theta) + offset_y)) \
             for r, theta in polar_coords]  # To rectangular coords
 
 
