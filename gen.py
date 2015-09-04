@@ -66,10 +66,11 @@ class IslandGenerator():
                 break  # Exit loop
         return (radius, angle)
 
-    def gen_spokes(self, peak, polar_coords):
-        for angle in range(0, 360, 60):
-            for radius, angle in polar_coords:
-                pass
+    def gen_spokes(self, rect_shore, peak):
+        spokes = []
+        for x, y in rect_shore[::60]:
+            spokes.append({'start': (x, y), 'end': polar_to_rectangular(peak)})
+        return spokes
 
 
 def apply_noise_to_base(border, radius=200):
@@ -107,6 +108,12 @@ def render_shore_noise(surf, points):
     pygame.draw.lines(surf, WHITE, False, point_list, 1)
     for x, y in point_list:  # points
         surf.set_at((int(x), int(y)), RED)
+
+
+def render_spokes(surf, spokes):
+    """ Renders an aaline of a series of points. """
+    for spoke in spokes:
+        pygame.draw.line(surf, CYAN, spoke['start'], spoke['end'], 1)  # x-axis
 
 
 def flood_fill(surf):
@@ -193,9 +200,10 @@ def main():
             polar_shore = apply_noise_to_base(shore_noise, radius=radius)  # Wrap it around a circle
             rect_shore = [polar_to_rectangular(x) for x in polar_shore]  # Conver to (x, y)
             peak = generator.define_peak(polar_shore)
-            spokes = generator.gen_spokes(peak, polar_shore)
+            spokes = generator.gen_spokes(rect_shore, peak)
             render_island(surface, rect_shore, radius)  # Graph island
             render_peak(surface, peak)
+            render_spokes(surface, spokes)
 
             # flood_fill(surface)  # Fill Island w/ color
             pygame.display.flip()
