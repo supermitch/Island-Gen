@@ -51,13 +51,19 @@ class IslandGenerator():
             border.append((i, y))
         return border
 
-    def define_peak(self, scale=50):
-        alpha = 4.0
-        theta = 1.0
-        beta = 1.0 / theta
-        var = random.gammavariate(alpha, beta)
-        radius= var * scale
-        angle = random.randint(0, 360)  # Random orientation
+    def define_peak(self, polar_shore, scale=20):
+        while True:
+            alpha = 4.0
+            theta = 1.0
+            beta = 1.0 / theta
+            var = random.gammavariate(alpha, beta)
+            radius = var * scale
+            angle = random.randint(0, 360)  # Random orientation
+            for r, _ in polar_shore:
+                if r < radius:  # Check that peak is within shoreline
+                    break  # Repeat generation
+            else:
+                break  # Exit loop
         return (radius, angle)
 
     def gen_spokes(self, peak, polar_coords):
@@ -66,8 +72,8 @@ class IslandGenerator():
                 pass
 
 
-def scale_to_polar(border, radius=200):
-    """ Apply our border to our island. """
+def apply_noise_to_base(border, radius=200):
+    """ Apply our noisy 'border' to our base circle. """
     radii = (radius + y for _, y in border)  # Adjust radii
     angles = (x * math.pi / 180.0 for x, _ in border)  # Convert to radians
     return zip(radii, angles)
@@ -92,7 +98,7 @@ def render_peak(surf, polar):
     pygame.draw.circle(surf, YELLOW, pos, 3, 1)  # Peak centre
 
 
-def render_border(surf, points):
+def render_shore_noise(surf, points):
     """ Renders an aaline of a series of points. """
     point_list = [(x + 50, -y + 800) for x, y in points]  # Up is -ve
     pygame.draw.line(surf, CYAN, (50, 800), (410, 800), 1)  # x-axis
@@ -100,7 +106,7 @@ def render_border(surf, points):
 
     pygame.draw.lines(surf, WHITE, False, point_list, 1)
     for x, y in point_list:  # points
-        pygame.draw.circle(surf, RED, (int(x), int(y)), 1)
+        surf.set_at((int(x), int(y)), RED)
 
 
 def flood_fill(surf):
@@ -181,14 +187,14 @@ def main():
             result = 'regen'
         if result == 'regen':
             surface.fill(BLACK)
-            border = generator.gen_border()  # Generate random noise
-            render_border(surface, border)  # Draw it
+            shore_noise = generator.gen_border()  # Generate random noise
+            render_shore_noise(surface, shore_noise)  # Draw it
 
-            polar_coords = scale_to_polar(border, radius=radius)  # Wrap it around a circle
-            rect_coords = [polar_to_rectangular(x) for x in polar_coords]  # Conver to (x, y)
-            peak = generator.define_peak()
-            spokes = generator.gen_spokes(peak, polar_coords)
-            render_island(surface, rect_coords, radius)  # Graph island
+            polar_shore = apply_noise_to_base(shore_noise, radius=radius)  # Wrap it around a circle
+            rect_shore = [polar_to_rectangular(x) for x in polar_shore]  # Conver to (x, y)
+            peak = generator.define_peak(polar_shore)
+            spokes = generator.gen_spokes(peak, polar_shore)
+            render_island(surface, rect_shore, radius)  # Graph island
             render_peak(surface, peak)
 
             # flood_fill(surface)  # Fill Island w/ color
