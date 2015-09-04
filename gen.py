@@ -82,7 +82,7 @@ def polar_to_rectangular(polar_coords, offset_x=450, offset_y=450):
 def render_island(surf, coords, radius):
     """ Renders an aaline of a series of points. """
     pygame.draw.circle(surf, RED, (450, 450), radius, 1)  # Original centre
-    pygame.draw.aalines(surf, BEIGE, True, coords, False)  # Island shore
+    # pygame.draw.aalines(surf, BEIGE, True, coords, False)  # Island shore
     for point in coords:  # Data points
         pygame.draw.circle(surf, GREEN, (int(point[0]), int(point[1])), 1)
 
