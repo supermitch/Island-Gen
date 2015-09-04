@@ -66,7 +66,6 @@ class IslandGenerator():
                 pass
 
 
-
 def scale_to_polar(border, radius=200):
     """ Apply our border to our island. """
     radii = (radius + y for _, y in border)  # Adjust radii
@@ -84,12 +83,14 @@ def render_island(surf, coords, radius):
     pygame.draw.circle(surf, RED, (450, 450), radius, 1)  # Original centre
     # pygame.draw.aalines(surf, BEIGE, True, coords, False)  # Island shore
     for point in coords:  # Data points
-        pygame.draw.circle(surf, GREEN, (int(point[0]), int(point[1])), 1)
+        x, y = int(point[0]), int(point[1])
+        surf.set_at((x, y), GREEN)  # Color pixel
 
 
 def render_peak(surf, polar):
     pos = polar_to_rectangular(polar)
     pygame.draw.circle(surf, YELLOW, pos, 3, 1)  # Peak centre
+
 
 def render_border(surf, points):
     """ Renders an aaline of a series of points. """
