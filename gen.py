@@ -69,9 +69,8 @@ def scale_to_polar(border, radius=200):
 
 
 def polar_to_rectangular(polar_coords, offset_x=450, offset_y=450):
-    # TODO: Just do the calc on one goddamn tuple, not a list. Jesus.
-    return [(int(r * math.cos(theta) + offset_x), int(r * math.sin(theta) + offset_y)) \
-            for r, theta in polar_coords]  # To rectangular coords
+    r, theta = polar_coords
+    return int(r * math.cos(theta) + offset_x), int(r * math.sin(theta) + offset_y)
 
 
 def render_island(surf, coords, radius):
@@ -83,7 +82,7 @@ def render_island(surf, coords, radius):
 
 
 def render_peak(surf, polar):
-    pos = polar_to_rectangular([polar])[0]
+    pos = polar_to_rectangular(polar)
     pygame.draw.circle(surf, YELLOW, pos, 3, 1)  # Peak centre
 
 def render_border(surf, points):
@@ -180,7 +179,7 @@ def main():
             render_border(surface, border)  # Draw it
 
             polar_coords = scale_to_polar(border, radius=radius)  # Wrap it around a circle
-            rect_coords = polar_to_rectangular(polar_coords)  # Conver to (x, y)
+            rect_coords = [polar_to_rectangular(x) for x in polar_coords]  # Conver to (x, y)
             render_island(surface, rect_coords, radius)  # Graph island
             render_peak(surface, peak)
 
