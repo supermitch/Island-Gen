@@ -60,6 +60,12 @@ class IslandGenerator():
         angle = random.randint(0, 360)  # Random orientation
         return (radius, angle)
 
+    def gen_spokes(self, peak, polar_coords):
+        for angle in range(0, 360, 60):
+            for radius, angle in polar_coords:
+                pass
+
+
 
 def scale_to_polar(border, radius=200):
     """ Apply our border to our island. """
@@ -173,13 +179,14 @@ def main():
             generator.octaves += sign * 1
             result = 'regen'
         if result == 'regen':
-            peak = generator.define_peak()
             surface.fill(BLACK)
             border = generator.gen_border()  # Generate random noise
             render_border(surface, border)  # Draw it
 
             polar_coords = scale_to_polar(border, radius=radius)  # Wrap it around a circle
             rect_coords = [polar_to_rectangular(x) for x in polar_coords]  # Conver to (x, y)
+            peak = generator.define_peak()
+            spokes = generator.gen_spokes(peak, polar_coords)
             render_island(surface, rect_coords, radius)  # Graph island
             render_peak(surface, peak)
 
