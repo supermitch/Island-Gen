@@ -1,6 +1,7 @@
 from __future__ import division
 
 import collections
+import math
 
 
 def gen_spokes():
@@ -40,12 +41,25 @@ def right_intersection(point, line):
     return (x, y)
 
 
+def point_distance(start, end, squared=False):
+    """
+    Calculate distance between two points using Pythagorean theorem.
+    """
+    d_squared = (end[0] - start[0]) ** 2 + (end[1] - start[1]) ** 2
+    if squared:
+        return d_squared
+    else:
+        return math.sqrt(d_squared)
+
+
 def main():
     spokes = gen_spokes()
     for spoke in spokes:
         cells = collect_cells(spoke)
         for cell in cells:
             point = right_intersection(cell, spoke)
+            d = point_distance(cell, point)
+            print(point, cell, d)
 
 
 if __name__ == '__main__':
