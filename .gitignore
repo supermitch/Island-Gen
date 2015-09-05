@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *.swp
 
+# Virtualenv
+venv/
+
 # C extensions
 *.so
 
