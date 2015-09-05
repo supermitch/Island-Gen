@@ -1,7 +1,11 @@
 from __future__ import division
 
 import collections
+import itertools
 import math
+
+
+Spoke = collections.namedtuple('Spoke', 'start, end')
 
 
 def gen_spokes():
@@ -13,18 +17,28 @@ def gen_spokes():
         ((338, 257), (458, 439)),
         ((549, 276), (458, 439))
     ]
-    Spoke = collections.namedtuple('Spoke', 'start, end')
     return [(Spoke(points[0], points[1])) for points in data]
 
 
-def collect_cells(spoke):
+def get_neighbours(cell, include_self=False):
+    """ Get 8 neighbouring cell coords to a start cell. """
+    offsets = list(itertools.product([0, 1, -1], repeat=2))
+    if not include_self:
+        del offsets[offsets.index((0, 0))]  # Don't include start cell
+    return [(cell[0] + dx, cell[1] + dy) for dx, dy in offsets]
+
+
+def discretize_line(start, end):
+    spoke = Spoke(start, end)
     print(spoke)
-    left = min(spoke.start[0], spoke.end[0])
-    right = max(spoke.start[0], spoke.end[0])
-    top  = min(spoke.start[1], spoke.end[1])
-    bottom = max(spoke.start[1], spoke.end[1])
-    print('Span: ({}, {}) ({}, {})'.format(left, right, top, bottom))
-    return [(x, y) for x in range(left, right + 1) for y in range(top, bottom + 1)]
+    while start != end:
+        neighbours = get_neighbours(start)
+        print(neighbours)
+        for cell in neighbours:
+            point = right_intersection(cell, spoke)
+            d = point_distance(cell, point)
+            print(point, cell, d)
+        start = end
 
 
 def right_intersection(point, line):
@@ -55,11 +69,7 @@ def point_distance(start, end, squared=False):
 def main():
     spokes = gen_spokes()
     for spoke in spokes:
-        cells = collect_cells(spoke)
-        for cell in cells:
-            point = right_intersection(cell, spoke)
-            d = point_distance(cell, point)
-            print(point, cell, d)
+        discretize_line(spoke.start, spoke.end)
 
 
 if __name__ == '__main__':
