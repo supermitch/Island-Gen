@@ -31,14 +31,26 @@ def get_neighbours(cell, include_self=False):
 def discretize_line(start, end):
     spoke = Spoke(start, end)
     print(spoke)
+    line = [start]
+    seen = set()
     while start != end:
         neighbours = get_neighbours(start)
         print(neighbours)
+        next_cell = None
+        min_distance = float('inf')
         for cell in neighbours:
-            point = right_intersection(cell, spoke)
-            d = point_distance(cell, point)
-            print(point, cell, d)
-        start = end
+            if cell in seen:  # Don't go backwards
+                continue
+            intersection = right_intersection(cell, spoke)
+            distance = point_distance(cell, intersection)
+            if distance < min_distance:
+                min_distance = distance
+                next_cell = cell
+            print(intersection, cell, distance)
+        line.append(next_cell)
+        seen.add(next_cell)
+        start = next_cell
+    return line
 
 
 def right_intersection(point, line):
@@ -68,8 +80,11 @@ def point_distance(start, end, squared=False):
 
 def main():
     spokes = gen_spokes()
+    lines = []
     for spoke in spokes:
-        discretize_line(spoke.start, spoke.end)
+        line_cells = discretize_line(spoke.start, spoke.end)
+        lines.append(line_cells)
+    print(line_cells)
 
 
 if __name__ == '__main__':
