@@ -59,6 +59,11 @@ def right_intersection(point, line):
 
     A line through that point would intersect at a right angle.
     """
+    if line.start[1] == line.end[1]:  # line is horizontal (same y values)
+        return (point[0], line.start[1])
+    elif line.start[0] == line.end[0]:  # line is vertical (same x values)
+        return (line.start[0], point[1])
+
     m = (line.end[1] - line.start[1]) / (line.end[0] - line.start[0])  # slope
     b = line.start[1] - m * line.start[0]  # y-intercept
     c = point[1] + point[0] / m  # y-intercept of intersecting line

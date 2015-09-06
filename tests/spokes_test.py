@@ -31,14 +31,14 @@ def test_right_intersection():
     assert result == (1, 1)
 
 
-def test_right_intersection_vertical():
+def test_right_intersection_horizontal_line():
     line = spokes.Spoke((0, 0), (9, 0))
     point = (3, 2)
     result = spokes.right_intersection(point, line)  # Fails
     assert result == (3, 0)
 
 
-def test_right_intersection_horizontal():
+def test_right_intersection_vertical_line():
     line = spokes.Spoke((1, 0), (1, 7))
     point = (3, 2)
     result = spokes.right_intersection(point, line)  # Fails
