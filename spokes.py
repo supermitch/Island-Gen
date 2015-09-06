@@ -86,10 +86,10 @@ def point_distance(start, end, squared=False):
 def main():
     spokes = gen_spokes()
     lines = []
-    for spoke in spokes:
+    for spoke in spokes[:1]:
         line_cells = discretize_line(spoke.start, spoke.end)
         lines.append(line_cells)
-    print(line_cells)
+        print(line_cells)
 
 
 if __name__ == '__main__':
