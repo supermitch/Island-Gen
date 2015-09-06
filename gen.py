@@ -11,14 +11,14 @@ from pygame.locals import *
 from noise import pnoise1, pnoise2, snoise2
 
 
-BEIGE  = (200, 200, 100)
-BLACK  = (  0,   0,   0)
-BLUE   = (  0,   0, 200)
-GREEN  = (  0, 255,   0)
-YELLOW  = (255, 255,   0)
-RED    = (255,   0,   0)
-WHITE  = (255, 255, 255)
-CYAN = (  0, 255, 255)
+BEIGE = (200, 200, 100)
+BLACK = (0, 0, 0)
+BLUE = (0, 0, 200)
+GREEN = (0, 255, 0)
+YELLOW = (255, 255, 0)
+RED = (255, 0, 0)
+WHITE = (255, 255, 255)
+CYAN = (0, 255, 255)
 
 
 def setup_screen(screen_size=(900, 900)):
