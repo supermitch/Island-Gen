@@ -72,7 +72,6 @@ def discretize_line(start, end):
             if distance < min_distance:
                 min_distance = distance
                 next_cell = cell
-            print(intersection, cell, distance)
         line.append(next_cell)
         seen.add(next_cell)
         start = next_cell
