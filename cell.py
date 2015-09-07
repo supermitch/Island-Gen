@@ -55,9 +55,12 @@ def discretize_line(start, end):
     Turn start and end points (which are integer (x, y) tuples) into
     a list of integer (x, y) points forming a line.
     """
-    spoke = Spoke(start, end)
-    print(spoke)
-    line = [start]
+    max_length = abs(end[1] - start[1]) + abs(end[0] - start[0])
+
+    Line = collections.namedtuple('Line', 'start, end')
+    line = Line(start, end)
+    print(line)
+    results = [start]
     seen = set()
     while start != end:
         neighbours = get_neighbours(start)
@@ -67,13 +70,15 @@ def discretize_line(start, end):
         for cell in neighbours:
             if cell in seen:  # Don't go backwards
                 continue
-            intersection = right_intersection(cell, spoke)
+            intersection = right_intersection(cell, line)
             distance = point_distance(cell, intersection)
             if distance < min_distance:
                 min_distance = distance
                 next_cell = cell
-        line.append(next_cell)
+        results.append(next_cell)
+        if len(results) > max_length:  # Failed!
+            return None
         seen.add(next_cell)
         start = next_cell
-    return line
+    return results
 
