@@ -8,49 +8,16 @@ import math
 Spoke = collections.namedtuple('Spoke', 'start, end')
 
 
-def gen_spokes():
-    data = [
-        ((650, 450), (458, 439)),
-        ((550, 624), (458, 439)),
-        ((351, 621), (458, 439)),
-        ((250, 450), (458, 439)),
-        ((338, 257), (458, 439)),
-        ((549, 276), (458, 439))
-    ]
-    return [(Spoke(points[0], points[1])) for points in data]
-
-
 def get_neighbours(cell, include_self=False):
-    """ Get 8 neighbouring cell coords to a start cell. """
+    """
+    Get 8 neighbouring cell coords to a start cell.
+
+    If `include_self` is True, returns the current (center) cell as well.
+    """
     offsets = list(itertools.product([0, 1, -1], repeat=2))
     if not include_self:
         del offsets[offsets.index((0, 0))]  # Don't include start cell
     return [(cell[0] + dx, cell[1] + dy) for dx, dy in offsets]
-
-
-def discretize_line(start, end):
-    spoke = Spoke(start, end)
-    print(spoke)
-    line = [start]
-    seen = set()
-    while start != end:
-        neighbours = get_neighbours(start)
-        print(neighbours)
-        next_cell = None
-        min_distance = float('inf')
-        for cell in neighbours:
-            if cell in seen:  # Don't go backwards
-                continue
-            intersection = right_intersection(cell, spoke)
-            distance = point_distance(cell, intersection)
-            if distance < min_distance:
-                min_distance = distance
-                next_cell = cell
-            print(intersection, cell, distance)
-        line.append(next_cell)
-        seen.add(next_cell)
-        start = next_cell
-    return line
 
 
 def right_intersection(point, line):
@@ -83,15 +50,31 @@ def point_distance(start, end, squared=False):
         return math.sqrt(d_squared)
 
 
-def main():
-    spokes = gen_spokes()
-    lines = []
-    for spoke in spokes[:1]:
-        line_cells = discretize_line(spoke.start, spoke.end)
-        lines.append(line_cells)
-        print(line_cells)
-
-
-if __name__ == '__main__':
-    main()
+def discretize_line(start, end):
+    """
+    Turn start and end points (which are integer (x, y) tuples) into
+    a list of integer (x, y) points forming a line.
+    """
+    spoke = Spoke(start, end)
+    print(spoke)
+    line = [start]
+    seen = set()
+    while start != end:
+        neighbours = get_neighbours(start)
+        print(neighbours)
+        next_cell = None
+        min_distance = float('inf')
+        for cell in neighbours:
+            if cell in seen:  # Don't go backwards
+                continue
+            intersection = right_intersection(cell, spoke)
+            distance = point_distance(cell, intersection)
+            if distance < min_distance:
+                min_distance = distance
+                next_cell = cell
+            print(intersection, cell, distance)
+        line.append(next_cell)
+        seen.add(next_cell)
+        start = next_cell
+    return line
 
