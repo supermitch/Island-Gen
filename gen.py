@@ -113,10 +113,10 @@ def render_shore_noise(surf, points):
         surf.set_at((int(x), int(y)), RED)
 
 
-def render_spokes(surf, spokes):
+def render_lines(surf, line_cells):
     """ Renders an aaline of a series of points. """
-    for spoke in spokes:
-        pygame.draw.line(surf, CYAN, spoke.start, spoke.end, 1)  # x-axis
+    for cell in line_cells:
+        surf.set_at(cell, YELLOW)
 
 
 def spokes_to_pixels(spokes):
@@ -209,9 +209,13 @@ def main():
             rect_shore = [polar_to_rectangular(x) for x in polar_shore]  # Conver to (x, y)
             peak = generator.define_peak(polar_shore)
             spokes = generator.gen_spokes(rect_shore, peak)
+            lines = []
+            for spoke in spokes[:1]:
+                line_cells = cell.discretize_line(spoke.start, spoke.end)
+                render_lines(surface, line_cells)
+                lines.append(line_cells)
             render_island(surface, rect_shore, radius)  # Graph island
             render_peak(surface, peak)
-            render_spokes(surface, spokes)
             spoke_pixels = spokes_to_pixels(spokes)
 
             # flood_fill(surface)  # Fill Island w/ color
