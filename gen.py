@@ -10,6 +10,7 @@ import pygame
 from pygame.locals import *
 from noise import pnoise1, pnoise2, snoise2
 
+import cell
 
 BEIGE = (200, 200, 100)
 BLACK = (0, 0, 0)
