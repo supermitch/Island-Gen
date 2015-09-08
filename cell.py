@@ -69,7 +69,8 @@ def discretize_line(start, end):
     Turn start and end points (which are integer (x, y) tuples) into
     a list of integer (x, y) points forming a line.
     """
-    max_length = abs(end[1] - start[1]) + abs(end[0] - start[0])
+    max_length = abs(end[1] - start[1]) + abs(end[0] - start[0]) + 1  # Plus start
+    print(max_length)
 
     Line = collections.namedtuple('Line', 'start, end')
     line = Line(start, end)
@@ -95,6 +96,7 @@ def discretize_line(start, end):
                 next_cell = cell
         results.append(next_cell)
         if len(results) > max_length:  # Failed!
+            print('Found too many cells. Aborting.')
             return None
         seen.add(next_cell)
         start = next_cell
