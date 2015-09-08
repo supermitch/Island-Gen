@@ -21,10 +21,15 @@ def get_neighbours(cell, include_self=False):
 
 
 def restrict_quadrants(neighbours, start, end):
+    cells = neighbours[:]
     if end[0] > start[0]:
-        cells = [x for x in neighbours if x[0] >= start[0]]
+        cells = [x for x in cells if x[0] >= start[0]]
+    elif end[0] < start[0]:
+        cells = [x for x in cells if x[0] <= start[0]]
     if end[1] > start[1]:
-        cells = [x for x in neighbours if x[1] >= start[1]]
+        cells = [x for x in cells if x[1] >= start[1]]
+    elif end[1] < start[1]:
+        cells = [x for x in cells if x[1] <= start[1]]
 
     return cells
 
