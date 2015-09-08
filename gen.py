@@ -100,7 +100,7 @@ def render_island(surf, coords, radius):
 
 def render_peak(surf, polar):
     pos = polar_to_rectangular(polar)
-    pygame.draw.circle(surf, YELLOW, pos, 3, 1)  # Peak centre
+    pygame.draw.circle(surf, WHITE, pos, 3, 1)  # Peak centre
 
 
 def render_shore_noise(surf, points):
@@ -210,7 +210,7 @@ def main():
             peak = generator.define_peak(polar_shore)
             spokes = generator.gen_spokes(rect_shore, peak)
             lines = []
-            for spoke in spokes[:1]:
+            for spoke in spokes:
                 line_cells = cell.discretize_line(spoke.start, spoke.end)
                 render_lines(surface, line_cells)
                 lines.append(line_cells)
