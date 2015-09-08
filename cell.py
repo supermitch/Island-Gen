@@ -20,6 +20,15 @@ def get_neighbours(cell, include_self=False):
     return [(cell[0] + dx, cell[1] + dy) for dx, dy in offsets]
 
 
+def restrict_quadrants(neighbours, start, end):
+    if end[0] > start[0]:
+        cells = [x for x in neighbours if x[0] >= start[0]]
+    if end[1] > start[1]:
+        cells = [x for x in neighbours if x[1] >= start[1]]
+
+    return cells
+
+
 def right_intersection(point, line):
     """
     Determine the point at which a point is closest to a line
@@ -64,6 +73,9 @@ def discretize_line(start, end):
     seen = set()
     while start != end:
         neighbours = get_neighbours(start)
+        neighbours = restrict_quadrants(neighbours, start, end)
+
+        print('\nnext round')
         print(neighbours)
         next_cell = None
         min_distance = float('inf')
@@ -72,6 +84,7 @@ def discretize_line(start, end):
                 continue
             intersection = right_intersection(cell, line)
             distance = point_distance(cell, intersection)
+            print(cell, distance)
             if distance < min_distance:
                 min_distance = distance
                 next_cell = cell

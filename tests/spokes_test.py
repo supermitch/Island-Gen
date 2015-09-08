@@ -1,7 +1,7 @@
 import cell
 
 
-def test_get_neighbours_with_self():
+def test_get_neighbours():
     start = (5, 5)
     expected = [
         (5, 5), (5, 6), (5, 4),
@@ -9,18 +9,24 @@ def test_get_neighbours_with_self():
         (4, 5), (4, 6), (4, 4),
     ]
     results = cell.get_neighbours(start, include_self=True)
-    assert expected == results
+    assert results == expected
+
+    del expected[expected.index(start)]  # Eliminate start cell from expected
+    results = cell.get_neighbours(start)
+    assert results == expected
 
 
-def test_get_neighbours_no_self():
-    start = (5, 5)
-    expected = [
+def test_restrict_quadrants():
+    neighbours = [
         (5, 6), (5, 4),
         (6, 5), (6, 6), (6, 4),
         (4, 5), (4, 6), (4, 4),
     ]
-    results = cell.get_neighbours(start)
-    assert expected == results
+    start = (5, 5)
+    end = (10, 10)
+    expected = [(5, 6),  (6, 5), (6, 6)]
+    results = cell.restrict_quadrants(neighbours, start, end)
+    assert results == expected
 
 
 def test_right_intersection():
