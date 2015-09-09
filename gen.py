@@ -36,14 +36,15 @@ class IslandGenerator():
         self.octaves = 8
         self.scale = 40
 
-    def gen_border(self):
+    def gen_border(self, points):
         """
         Generate a border to apply to our island to build shoreline.
 
         Returns a list of (x, y) points of generated pnoise.
+
+        - Points is the number of points in the returned list.
         """
-        points = 360
-        base = random.randint(0, 500)
+        base = random.randint(0, 5000)
         border = []
         for i in range(points):
             x = float(i) * self.span / points
@@ -197,7 +198,7 @@ def main():
             result = 'regen'
         if result == 'regen':
             surface.fill(BLACK)
-            shore_noise = generator.gen_border()  # Generate random noise
+            shore_noise = generator.gen_border(points=360)  # Generate random noise
             render_shore_noise(surface, shore_noise)  # Draw it
 
             polar_shore = apply_noise_to_base(shore_noise, radius=radius)  # Wrap it around a circle
@@ -207,6 +208,9 @@ def main():
             spokes = [cell.discretize_line(x.start, x.end) for x in lines]
             for spoke in spokes:
                 render_lines(surface, spoke)
+                spoke_noise = generator.gen_border(points=len(spoke))
+                spoke_cells = [(x, y, z) for (x, y), (_, z) in zip(spoke, spoke_noise)]
+
             render_island(surface, rect_shore, radius)  # Graph island
             render_peak(surface, peak)
 
