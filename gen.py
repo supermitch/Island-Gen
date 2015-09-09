@@ -67,14 +67,16 @@ class IslandGenerator():
                     break  # Repeat generation
             else:
                 break  # Exit loop
-        return (radius, angle)
+        height = random.randint(20, 200)
+        x, y = polar_to_rectangular((radius, angle))
+        return (x, y, height)
 
     def gen_spokes(self, rect_shore, peak):
         """
         Generate a list of lines (spokes) from start to end positions.
         """
         Spoke = collections.namedtuple('Spoke', 'start, end')
-        return [Spoke(point, polar_to_rectangular(peak)) for point in rect_shore[::60]]
+        return [Spoke(point, peak) for point in rect_shore[::60]]
 
 
 
@@ -99,9 +101,8 @@ def render_island(surf, coords, radius):
         surf.set_at((x, y), GREEN)  # Color pixel
 
 
-def render_peak(surf, polar):
-    pos = polar_to_rectangular(polar)
-    pygame.draw.circle(surf, WHITE, pos, 3, 1)  # Peak centre
+def render_peak(surf, pos):
+    pygame.draw.circle(surf, WHITE, (pos[0], pos[1]), 3, 1)  # Peak centre
 
 
 def render_shore_noise(surf, points):
