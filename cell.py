@@ -75,7 +75,7 @@ def discretize_line(start, end):
     line = Line(start, end)
     results = [start]
     seen = set()
-    while start != end:
+    while start != (end[0], end[1]):
         neighbours = get_neighbours(start)
         neighbours = restrict_quadrants(neighbours, start, end)
 
