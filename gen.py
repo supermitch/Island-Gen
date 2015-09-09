@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import division
 import collections
 import itertools
 import math
@@ -68,6 +69,7 @@ class IslandGenerator():
             else:
                 break  # Exit loop
         height = random.randint(20, 200)
+        print(height)
         x, y = polar_to_rectangular((radius, angle))
         return (x, y, height)
 
@@ -90,6 +92,16 @@ def apply_noise_to_base(border, radius=200):
 def polar_to_rectangular(polar_coords, offset_x=450, offset_y=450):
     r, theta = polar_coords
     return int(r * math.cos(theta) + offset_x), int(r * math.sin(theta) + offset_y)
+
+
+def apply_peak_height(spoke_noise, peak):
+    output_noise = []
+    for i, (x, y) in enumerate(spoke_noise):
+        dy = i / len(spoke_noise) * peak[2]
+        y += dy
+        output_noise.append((x, y))
+    print(dy)
+    return output_noise
 
 
 def render_island(surf, coords, radius):
@@ -210,6 +222,7 @@ def main():
             for spoke in spokes:
                 render_lines(surface, spoke)
                 spoke_noise = generator.gen_border(points=len(spoke))
+                spoke_noise = apply_peak_height(spoke_noise, peak)
                 spoke_cells = [(x, y, z) for (x, y), (_, z) in zip(spoke, spoke_noise)]
 
             render_island(surface, rect_shore, radius)  # Graph island
