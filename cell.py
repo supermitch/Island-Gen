@@ -70,19 +70,15 @@ def discretize_line(start, end):
     a list of integer (x, y) points forming a line.
     """
     max_length = abs(end[1] - start[1]) + abs(end[0] - start[0]) + 1  # Plus start
-    print(max_length)
 
     Line = collections.namedtuple('Line', 'start, end')
     line = Line(start, end)
-    print(line)
     results = [start]
     seen = set()
     while start != end:
         neighbours = get_neighbours(start)
         neighbours = restrict_quadrants(neighbours, start, end)
 
-        print('\nnext round')
-        print(neighbours)
         next_cell = None
         min_distance = float('inf')
         for cell in neighbours:
@@ -90,7 +86,6 @@ def discretize_line(start, end):
                 continue
             intersection = right_intersection(cell, line)
             distance = point_distance(cell, intersection)
-            print(cell, distance)
             if distance < min_distance:
                 min_distance = distance
                 next_cell = cell

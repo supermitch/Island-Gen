@@ -119,11 +119,6 @@ def render_lines(surf, line_cells):
         surf.set_at(cell, YELLOW)
 
 
-def spokes_to_pixels(spokes):
-    for spoke in spokes:
-        print(spoke.start, spoke.end)
-
-
 def flood_fill(surf):
     print('Flood filling')
     WHITE = (255, 255, 255, 255)
@@ -208,15 +203,12 @@ def main():
             polar_shore = apply_noise_to_base(shore_noise, radius=radius)  # Wrap it around a circle
             rect_shore = [polar_to_rectangular(x) for x in polar_shore]  # Conver to (x, y)
             peak = generator.define_peak(polar_shore)
-            spokes = generator.gen_spokes(rect_shore, peak)
-            lines = []
+            lines = generator.gen_spokes(rect_shore, peak)
+            spokes = [cell.discretize_line(x.start, x.end) for x in lines]
             for spoke in spokes:
-                line_cells = cell.discretize_line(spoke.start, spoke.end)
-                render_lines(surface, line_cells)
-                lines.append(line_cells)
+                render_lines(surface, spoke)
             render_island(surface, rect_shore, radius)  # Graph island
             render_peak(surface, peak)
-            spoke_pixels = spokes_to_pixels(spokes)
 
             # flood_fill(surface)  # Fill Island w/ color
             pygame.display.flip()
