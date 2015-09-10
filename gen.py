@@ -97,10 +97,10 @@ def apply_noise_to_base(border, radius=200):
 def apply_peak_height(spoke_noise, peak):
     output_noise = []
     for i, (x, y) in enumerate(spoke_noise):
-        dy = i / len(spoke_noise) * peak[2]
+        dy = i / (len(spoke_noise) - 1) * peak[2]
         y += dy
         output_noise.append((x, y))
-    print(dy)
+
     return output_noise
 
 
