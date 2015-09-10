@@ -47,7 +47,7 @@ class IslandGenerator():
         """
         base = random.randint(0, 5000)
         border = []
-        for i in range(points):
+        for i in range(points + 1):
             x = float(i) * self.span / points
             y = pnoise1(x + base, self.octaves) * 1
             y += pnoise1(x + base, self.octaves + 4) * 2
@@ -82,16 +82,16 @@ class IslandGenerator():
 
 
 
+def polar_to_rectangular(polar_coords, offset_x=450, offset_y=450):
+    r, theta = polar_coords
+    return int(r * math.cos(theta) + offset_x), int(r * math.sin(theta) + offset_y)
+
+
 def apply_noise_to_base(border, radius=200):
     """ Apply our noisy 'border' to our base circle. """
     radii = (radius + y for _, y in border)  # Adjust radii
     angles = (x * math.pi / 180.0 for x, _ in border)  # Convert to radians
     return zip(radii, angles)
-
-
-def polar_to_rectangular(polar_coords, offset_x=450, offset_y=450):
-    r, theta = polar_coords
-    return int(r * math.cos(theta) + offset_x), int(r * math.sin(theta) + offset_y)
 
 
 def apply_peak_height(spoke_noise, peak):
