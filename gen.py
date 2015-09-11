@@ -69,7 +69,6 @@ class IslandGenerator():
             else:
                 break  # Exit loop
         height = random.randint(20, 200)
-        print(height)
         x, y = polar_to_rectangular((radius, angle))
         return (x, y, height)
 
