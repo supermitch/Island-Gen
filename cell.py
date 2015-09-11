@@ -97,3 +97,34 @@ def discretize_line(start, end):
         start = next_cell
     return results
 
+def join_points(start, end):
+    """
+    Starting at start, add cells until we reach end.
+
+    A different algorithm than discretize_line, which should result in a
+    very similar outcome?
+    """
+    max_length = abs(end[1] - start[1]) + abs(end[0] - start[0]) + 1  # Plus start
+
+    results = [start]
+    seen = set()
+    while start != end:  # Assume (x, y) tuple, will break if (x, y, z)
+        neighbours = get_neighbours(start)
+        neighbours = restrict_quadrants(neighbours, start, end)
+
+        next_cell = None
+        min_distance = float('inf')
+        for cell in neighbours:
+            if cell in seen:  # Don't go backwards
+                continue
+            distance = point_distance(cell, end)
+            if distance < min_distance:
+                min_distance = distance
+                next_cell = cell
+        results.append(next_cell)
+        if len(results) > max_length:  # Failed!
+            print('Found too many cells. Aborting.')
+            return None
+        seen.add(next_cell)
+        start = next_cell
+    return results

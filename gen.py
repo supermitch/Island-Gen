@@ -216,6 +216,16 @@ def main():
 
             polar_shore = apply_noise_to_circle(shore_noise, radius=radius)  # Wrap it around a circle
             rect_shore = [polar_to_rectangular(x) for x in polar_shore]  # Conver to (x, y)
+
+            shore_lines = []
+            for index, point in enumerate(rect_shore[:-1]):  # All but last one
+                start = point
+                end = rect_shore[index + 1]  # Next point
+                line = cell.join_points(start, end)
+                shore_lines.append(line)
+            for line in shore_lines:
+                render_lines(surface, line)
+
             peak = generator.define_peak(polar_shore)
             lines = generator.gen_spokes(rect_shore, peak)
             spokes = [cell.discretize_line(x.start, x.end) for x in lines]
