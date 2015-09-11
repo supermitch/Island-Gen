@@ -87,7 +87,7 @@ def polar_to_rectangular(polar_coords, offset_x=450, offset_y=450):
     return int(r * math.cos(theta) + offset_x), int(r * math.sin(theta) + offset_y)
 
 
-def apply_noise_to_base(border, radius=200):
+def apply_noise_to_circle(border, radius=200):
     """ Apply our noisy 'border' to our base circle. """
     radii = (radius + y for _, y in border)  # Adjust radii
     angles = (x * math.pi / 180.0 for x, _ in border)  # Convert to radians
@@ -214,7 +214,7 @@ def main():
             shore_noise = generator.gen_border(points=360)  # Generate random noise
             render_shore_noise(surface, shore_noise)  # Draw it
 
-            polar_shore = apply_noise_to_base(shore_noise, radius=radius)  # Wrap it around a circle
+            polar_shore = apply_noise_to_circle(shore_noise, radius=radius)  # Wrap it around a circle
             rect_shore = [polar_to_rectangular(x) for x in polar_shore]  # Conver to (x, y)
             peak = generator.define_peak(polar_shore)
             lines = generator.gen_spokes(rect_shore, peak)
