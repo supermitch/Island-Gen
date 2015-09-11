@@ -80,3 +80,10 @@ def test_discretize_line_45():
     result = cell.discretize_line(start, end)
     assert result == expected
 
+def test_discretize_line_27():
+    start = (0, 0)
+    end = (2, 6)
+    expected = [(0, 0), (0, 1), (1, 2), (1, 3), (1, 4), (2, 5), (2, 6)]
+    result = cell.discretize_line(start, end)
+    assert result == expected
+

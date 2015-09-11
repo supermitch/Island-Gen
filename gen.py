@@ -221,7 +221,7 @@ def main():
             for index, point in enumerate(rect_shore[:-1]):  # All but last one
                 start = point
                 end = rect_shore[index + 1]  # Next point
-                line = cell.join_points(start, end)
+                line = cell.discretize_line(start, end)
                 shore_lines.append(line)
             for line in shore_lines:
                 render_lines(surface, line)
