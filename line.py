@@ -12,12 +12,11 @@ class Line(object):
         self.start = start
         self.end = end
 
-    @property
     def length(self, squared=False):
         """
         Calculate distance between start & end using Pythagorean theorem.
         """
-        d_squared = (end.x - start.x) ** 2 + (end.y - start.y) ** 2
+        d_squared = (self.end.x - self.start.x) ** 2 + (self.end.y - self.start.y) ** 2
         if squared:
             return d_squared
         else:
