@@ -5,26 +5,26 @@ import itertools
 import math
 
 
-Spoke = collections.namedtuple('Spoke', 'start, end')
-
-class Line(object):
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
-
-    def __str__(self):
-        return '({}, {})'.format(self.start, self.end)
-
-    def __repr__(self):
-        return 'line.Line({}, {})'.format(self.start, self.end)
-
-
-
 class Cell(object):
+    """
+    Representation of a 2D or 3D point in space.
+    """
+
     def __init__(self, x=0, y=0, z=0):
+        """
+        Initialize with any of x, y or z coordinates.
+        """
         self.x = x
         self.y = y
         self.z = z
+
+    def neighbours(self, ndims=2):
+        """
+        Get 8 neighbouring cell coords to a start cell.
+        """
+        offsets = list(itertools.product([0, 1, -1], repeat=2))
+        del offsets[offsets.index((0, 0))]  # Don't include self
+        return [(self.x + dx, self.y + dy) for dx, dy in offsets]
 
     def __str__(self):
         return '({}, {}, {})'.format(self.x, self.y, self.z)
@@ -32,17 +32,6 @@ class Cell(object):
     def __repr__(self):
         return 'cell.Cell({}, {}, {})'.format(self.x, self.y, self.z)
 
-
-def get_neighbours(cell, include_self=False):
-    """
-    Get 8 neighbouring cell coords to a start cell.
-
-    If `include_self` is True, returns the current (center) cell as well.
-    """
-    offsets = list(itertools.product([0, 1, -1], repeat=2))
-    if not include_self:
-        del offsets[offsets.index((0, 0))]  # Don't include start cell
-    return [(cell[0] + dx, cell[1] + dy) for dx, dy in offsets]
 
 
 def restrict_quadrants(neighbours, start, end):
