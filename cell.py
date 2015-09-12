@@ -42,6 +42,9 @@ class Cell(object):
         else:
             return (self.x, self.y, self.z)
 
+    def __eq__(self, other):
+        return all((self.x == other.x, self.y == other.y, self.z == other.z))
+
     def __iter__(self):
         return iter([self.x, self.y, self.z])
 
