@@ -36,6 +36,15 @@ class Cell(object):
         else:
             return math.sqrt(d_squared)
 
+    def to_tuple(self, ndims=3):
+        if ndims == 2:
+            return (self.x, self.y)
+        else:
+            return (self.x, self.y, self.z)
+
+    def __iter__(self):
+        return iter([self.x, self.y, self.z])
+
     def __str__(self):
         return '({}, {}, {})'.format(self.x, self.y, self.z)
 
