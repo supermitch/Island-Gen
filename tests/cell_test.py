@@ -1,6 +1,11 @@
 import cell
 
 
+def test_tuple_init():
+    assert cell.Cell(1, 0, 0) == cell.Cell((1,))
+    assert cell.Cell(1, 2, 0) == cell.Cell((1, 2))
+    assert cell.Cell(1, 2, 3) == cell.Cell((1, 2, 3))
+    assert cell.Cell(1, 2, 3) == cell.Cell((1, 2, 3, 4))  # 4D tuple
 
 def test_equality():
     assert cell.Cell(1, 2, 3) == cell.Cell(1, 2, 3)

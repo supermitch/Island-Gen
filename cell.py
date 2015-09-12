@@ -14,9 +14,18 @@ class Cell(object):
         """
         Initialize with any of x, y or z coordinates.
         """
-        self.x = x
-        self.y = y
-        self.z = z
+        if isinstance(x, tuple):
+            self.x, self.y, self.z = 0, 0, 0  # init
+            if len(x) > 0:
+                self.x = x[0]
+            if len(x) > 1:
+                self.y = x[1]
+            if len(x) > 2:
+                self.z = x[2]
+        else:
+            self.x = x
+            self.y = y
+            self.z = z
 
     def neighbours(self, ndims=2):
         """
@@ -43,7 +52,7 @@ class Cell(object):
             return (self.x, self.y, self.z)
 
     def __eq__(self, other):
-        return all((self.x == other.x, self.y == other.y, self.z == other.z))
+        return all([self.x == other.x, self.y == other.y, self.z == other.z])
 
     def __iter__(self):
         return iter([self.x, self.y, self.z])
