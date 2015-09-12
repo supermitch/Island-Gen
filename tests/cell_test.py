@@ -20,3 +20,15 @@ def test_get_neighbours():
     expected = [cell.Cell(*coords) for coords in data]
     assert start.neighbours() == expected
 
+def test_distance():
+    start = cell.Cell(3, 3)
+    end = cell.Cell(6, 3)
+    assert start.distance(end) == 3.0
+    assert start.distance(end, squared=True) == 9.0
+
+def test_point_distance_angle():
+    start = cell.Cell(0, 0)
+    end = cell.Cell(3, 4)
+    assert start.distance(end) == 5.0  # 3-4-5 triangle
+    assert start.distance(end, squared=True) == 25.0
+
