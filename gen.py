@@ -11,7 +11,8 @@ import pygame
 from pygame.locals import *
 from noise import pnoise1, pnoise2, snoise2
 
-import cell
+import cell, line
+
 
 BEIGE = (200, 200, 100)
 BLACK = (0, 0, 0)
@@ -70,14 +71,13 @@ class IslandGenerator():
                 break  # Exit loop
         height = random.randint(20, 200)
         x, y = polar_to_rectangular((radius, angle))
-        return (x, y, height)
+        return cell.Cell(x, y, height)
 
     def gen_spokes(self, rect_shore, peak):
         """
         Generate a list of lines (spokes) from start to end positions.
         """
-        Spoke = collections.namedtuple('Spoke', 'start, end')
-        return [Spoke(point, peak) for point in rect_shore[::60]]
+        return [line.Line(point, peak) for point in rect_shore[::60]]
 
 
 
@@ -96,7 +96,7 @@ def apply_noise_to_circle(border, radius=200):
 def apply_peak_height(spoke_noise, peak):
     output_noise = []
     for i, (x, y) in enumerate(spoke_noise):
-        dy = i / (len(spoke_noise) - 1) * peak[2]
+        dy = i / (len(spoke_noise) - 1) * peak.z
         y += dy
         output_noise.append((x, y))
 
@@ -108,12 +108,12 @@ def render_island(surf, coords, radius):
     pygame.draw.circle(surf, RED, (450, 450), radius, 1)  # Original centre
     # pygame.draw.aalines(surf, BEIGE, True, coords, False)  # Island shore
     for point in coords:  # Data points
-        x, y = int(point[0]), int(point[1])
+        x, y = int(point.x), int(point.y)
         surf.set_at((x, y), GREEN)  # Color pixel
 
 
-def render_peak(surf, pos):
-    pygame.draw.circle(surf, WHITE, (pos[0], pos[1]), 3, 1)  # Peak centre
+def render_peak(surf, point):
+    pygame.draw.circle(surf, WHITE, (point.x, point.y), 3, 1)  # Peak centre
 
 
 def render_shore_noise(surf, points):
@@ -141,11 +141,10 @@ def flood_fill(surf):
     seen = set()
     start = (center_x, center_y)
     stack = [start]
-    neighbours = list(itertools.product([0, 1, -1], repeat=2))
     while True:
         adjacent = False  # Has no adjacent unvisited pixels
         for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:  # Check 4 neighbours
-            x, y = start[0] + dx, start[1] + dy
+            x, y = start.x + dx, start.y + dy
             if (x, y) in seen:
                 continue
             else:
@@ -214,12 +213,13 @@ def main():
             render_shore_noise(surface, shore_noise)  # Draw it
 
             polar_shore = apply_noise_to_circle(shore_noise, radius=radius)  # Wrap it around a circle
-            rect_shore = [polar_to_rectangular(x) for x in polar_shore]  # Conver to (x, y)
+            rect_shore = [cell.Cell(*polar_to_rectangular(x)) for x in polar_shore]  # Conver to (x, y)
 
             shore_lines = []
             for index, point in enumerate(rect_shore[:-1]):  # All but last one
                 start = point
                 end = rect_shore[index + 1]  # Next point
+                print(start, end)
                 line = cell.discretize_line(start, end)
                 shore_lines.append(line)
             for line in shore_lines:
@@ -232,7 +232,7 @@ def main():
                 render_lines(surface, spoke)
                 spoke_noise = generator.gen_border(points=len(spoke))
                 spoke_noise = apply_peak_height(spoke_noise, peak)
-                spoke_cells = [(x, y, z) for (x, y), (_, z) in zip(spoke, spoke_noise)]
+                spoke_cells = [cell.Cell(x, y, z) for (x, y), (_, z) in zip(spoke, spoke_noise)]
 
             render_island(surface, rect_shore, radius)  # Graph island
             render_peak(surface, peak)

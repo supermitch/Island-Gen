@@ -24,7 +24,7 @@ class Cell(object):
         """
         offsets = list(itertools.product([0, 1, -1], repeat=2))
         del offsets[offsets.index((0, 0))]  # Don't include self
-        return [(self.x + dx, self.y + dy) for dx, dy in offsets]
+        return [Cell(self.x + dx, self.y + dy, self.z) for dx, dy in offsets]
 
     def distance(self, point, squared=False, ndims=2):
         """
@@ -55,15 +55,14 @@ class Cell(object):
 
 def restrict_quadrants(neighbours, start, end):
     cells = neighbours[:]
-    if end[0] > start[0]:
-        cells = [x for x in cells if x[0] >= start[0]]
-    elif end[0] < start[0]:
-        cells = [x for x in cells if x[0] <= start[0]]
-    if end[1] > start[1]:
-        cells = [x for x in cells if x[1] >= start[1]]
-    elif end[1] < start[1]:
-        cells = [x for x in cells if x[1] <= start[1]]
-
+    if end.x > start.x:
+        cells = [x for x in cells if x.x >= start.x]
+    elif end.x < start.x:
+        cells = [x for x in cells if x.x <= start.x]
+    if end.y > start.y:
+        cells = [x for x in cells if x.y >= start.y]
+    elif end.y < start.y:
+        cells = [x for x in cells if x.y <= start.y]
     return cells
 
 
@@ -73,28 +72,17 @@ def right_intersection(point, line):
 
     A line through that point would intersect at a right angle.
     """
-    if line.start[1] == line.end[1]:  # line is horizontal (same y values)
-        return (point[0], line.start[1])
-    elif line.start[0] == line.end[0]:  # line is vertical (same x values)
-        return (line.start[0], point[1])
-
-    m = (line.end[1] - line.start[1]) / (line.end[0] - line.start[0])  # slope
-    b = line.start[1] - m * line.start[0]  # y-intercept
-    c = point[1] + point[0] / m  # y-intercept of intersecting line
-    x = m * (c - b) / (m ** 2 + 1)  # x-coord of intersection
-    y = m * x + b  # y-coord of intersection
-    return (x, y)
-
-
-def point_distance(start, end, squared=False):
-    """
-    Calculate distance between two points using Pythagorean theorem.
-    """
-    d_squared = (end[0] - start[0]) ** 2 + (end[1] - start[1]) ** 2
-    if squared:
-        return d_squared
+    if line.start.y == line.end.y:  # line is horizontal (same y values)
+        x, y = point.x, line.start.y
+    elif line.start.x == line.end.x:  # line is vertical (same x values)
+        x, y = line.start.x, point.y
     else:
-        return math.sqrt(d_squared)
+        m = (line.end.y - line.start.y) / (line.end.x - line.start.x)  # slope
+        b = line.start.y - m * line.start.x  # y-intercept
+        c = point.y + point.x / m  # y-intercept of intersecting line
+        x = m * (c - b) / (m ** 2 + 1)  # x-coord of intersection
+        y = m * x + b  # y-coord of intersection
+    return Cell(x, y)
 
 
 def discretize_line(start, end):
@@ -102,14 +90,14 @@ def discretize_line(start, end):
     Turn start and end points (which are integer (x, y) tuples) into
     a list of integer (x, y) points forming a line.
     """
-    max_length = abs(end[1] - start[1]) + abs(end[0] - start[0]) + 1  # Plus start
+    max_length = abs(end.y - start.y) + abs(end.x - start.x) + 1  # Plus start
 
     Line = collections.namedtuple('Line', 'start, end')
     line = Line(start, end)
     results = [start]
     seen = set()
-    while start != (end[0], end[1]):
-        neighbours = get_neighbours(start)
+    while start != (end.x, end.y):  # Check in 2D only
+        neighbours = start.neighbours()
         neighbours = restrict_quadrants(neighbours, start, end)
 
         next_cell = None
@@ -118,7 +106,7 @@ def discretize_line(start, end):
             if cell in seen:  # Don't go backwards
                 continue
             intersection = right_intersection(cell, line)
-            distance = point_distance(cell, intersection)
+            distance = cell.distance(intersection)
             if distance < min_distance:
                 min_distance = distance
                 next_cell = cell
