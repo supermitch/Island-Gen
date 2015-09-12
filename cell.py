@@ -26,6 +26,16 @@ class Cell(object):
         del offsets[offsets.index((0, 0))]  # Don't include self
         return [(self.x + dx, self.y + dy) for dx, dy in offsets]
 
+    def distance(self, point, squared=False, ndims=2):
+        """
+        Calculate distance between two points using Pythagorean theorem.
+        """
+        d_squared = (point.x - self.x) ** 2 + (point.y - self.y) ** 2
+        if squared:
+            return d_squared
+        else:
+            return math.sqrt(d_squared)
+
     def __str__(self):
         return '({}, {}, {})'.format(self.x, self.y, self.z)
 
