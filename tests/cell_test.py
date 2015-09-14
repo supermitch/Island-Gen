@@ -12,12 +12,12 @@ def test_equality():
 
 def test_get_neighbours():
     start = cell.Cell(5, 5)
-    data = [
+    coords = [
         (5, 6), (5, 4),
         (6, 5), (6, 6), (6, 4),
         (4, 5), (4, 6), (4, 4),
     ]
-    expected = [cell.Cell(*coords) for coords in data]
+    expected = [cell.Cell(x) for x in coords]
     assert start.neighbours() == expected
 
 def test_distance():
@@ -33,14 +33,16 @@ def test_point_distance_angle():
     assert start.distance(end, squared=True) == 25.0
 
 def test_restrict_quadrants():
-    neighbours = [
+    coords = [
         (5, 6), (5, 4),
         (6, 5), (6, 6), (6, 4),
         (4, 5), (4, 6), (4, 4),
     ]
-    start = (5, 5)
-    end = (10, 10)
-    expected = [(5, 6),  (6, 5), (6, 6)]
+    neighbours = [cell.Cell(x) for x in coords]
+    start = cell.Cell(5, 5)
+    end = cell.Cell(10, 10)
+    coords = [(5, 6),  (6, 5), (6, 6)]
+    expected = [cell.Cell(x) for x in coords]
     results = cell.restrict_quadrants(neighbours, start, end)
     assert results == expected
 

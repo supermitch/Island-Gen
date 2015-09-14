@@ -1,3 +1,5 @@
+import cell
+
 
 def right_intersection(point, line):
     """
@@ -15,5 +17,5 @@ def right_intersection(point, line):
         c = point.y + point.x / m  # y-intercept of intersecting line
         x = m * (c - b) / (m ** 2 + 1)  # x-coord of intersection
         y = m * x + b  # y-coord of intersection
-    return Cell(x, y)
+    return cell.Cell(x, y)
 

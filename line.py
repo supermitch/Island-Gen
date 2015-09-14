@@ -22,7 +22,7 @@ class Line(object):
         else:
             return math.sqrt(d_squared)
 
-    def discretize():
+    def discretize(self):
         """
         Turn a line into a list of integer (x, y) Cells forming a line.
         """
