@@ -2,6 +2,14 @@ import cell
 import line
 
 
+def test_str():
+    _line = line.Line(cell.Cell(3, 3), cell.Cell(6, 3))
+    assert str(_line) == '((3, 3, 0), (6, 3, 0))'
+
+def test_repr():
+    _line = line.Line(cell.Cell(3, 3), cell.Cell(6, 3))
+    assert repr(_line) == 'line.Line((3, 3, 0), (6, 3, 0))'
+
 def test_length_distance_direct():
     start = cell.Cell(3, 3)
     end = cell.Cell(6, 3)

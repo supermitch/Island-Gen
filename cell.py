@@ -45,12 +45,6 @@ class Cell(object):
         else:
             return math.sqrt(d_squared)
 
-    def to_tuple(self, ndims=3):
-        if ndims == 2:
-            return (self.x, self.y)
-        else:
-            return (self.x, self.y, self.z)
-
     def __eq__(self, other):
         return all([self.x == other.x, self.y == other.y, self.z == other.z])
 

@@ -10,6 +10,12 @@ def test_tuple_init():
 def test_equality():
     assert cell.Cell(1, 2, 3) == cell.Cell(1, 2, 3)
 
+def test_str():
+    assert str(cell.Cell(3, 5, 7)) == '(3, 5, 7)'
+
+def test_iter():
+    assert [x for x in cell.Cell(1, 2, 3)] == [1, 2, 3]
+
 def test_get_neighbours():
     start = cell.Cell(5, 5)
     coords = [

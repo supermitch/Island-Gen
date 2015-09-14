@@ -55,7 +55,6 @@ class Line(object):
             start = next_cell
         return results
 
-
     def __str__(self):
         return '({}, {})'.format(self.start, self.end)
 
