@@ -32,6 +32,16 @@ def test_discretize_line_simple():
     expected = [cell.Cell(x) for x in coords]
     assert _line.discretize() == expected
 
+def test_discretize_line_x5():
+    start = cell.Cell(645, 463)
+    end = cell.Cell(651, 467)
+    _line = line.Line(start, end)
+    expected = [cell.Cell(x) for x in ((645, 463), (646, 464), (647, 464),
+                                       (648, 465), (649, 466), (650, 466),
+                                       (651, 467))]
+    result = list(_line.discretize())
+    assert result == expected
+
 def test_discretize_line_45():
     start = cell.Cell(0, 0)
     end = cell.Cell(-3, -3)
