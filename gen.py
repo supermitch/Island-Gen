@@ -233,7 +233,7 @@ def main():
                 render_lines(surface, spoke)
                 spoke_noise = generator.gen_border(points=len(spoke))
                 spoke_noise = apply_peak_height(spoke_noise, peak)
-                spoke_cells = [cell.Cell(x, y, z) for (x, y), (_, z) in zip(spoke, spoke_noise)]
+                spoke_cells = [cell.Cell(pixel.x, pixel.y, z) for pixel, (_, z) in zip(spoke, spoke_noise)]
 
             render_island(surface, rect_shore, radius)  # Graph island
             render_peak(surface, peak)
