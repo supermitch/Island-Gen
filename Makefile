@@ -1,2 +1,2 @@
 test:
-	nosetests -v -d --with-coverage
+	nosetests --verbose --detailed-errors --with-coverage --cover-inclusive --cover-tests
