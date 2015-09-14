@@ -221,7 +221,6 @@ def main():
                 start = point
                 end = rect_shore[index + 1]  # Next point
                 _line = line.Line(start, end)
-                print(_line)
                 pixel_line = _line.discretize()
                 shore_lines.append(pixel_line)
             for _line in shore_lines:
@@ -229,7 +228,7 @@ def main():
 
             peak = generator.define_peak(polar_shore)
             lines = generator.gen_spokes(rect_shore, peak)
-            spokes = [cell.discretize_line(x.start, x.end) for x in lines]
+            spokes = [x.discretize() for x in lines]
             for spoke in spokes:
                 render_lines(surface, spoke)
                 spoke_noise = generator.gen_border(points=len(spoke))
