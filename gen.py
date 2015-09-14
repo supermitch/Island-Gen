@@ -14,6 +14,7 @@ from noise import pnoise1, pnoise2, snoise2
 
 import cell
 import line
+import render
 
 
 BEIGE = (200, 200, 100)
@@ -114,35 +115,6 @@ def apply_peak_height(spoke_noise, peak):
     return output_noise
 
 
-def render_island(surf, coords, radius):
-    """ Renders an aaline of a series of points. """
-    pygame.draw.circle(surf, RED, (450, 450), radius, 1)  # Original centre
-    # pygame.draw.aalines(surf, BEIGE, True, coords, False)  # Island shore
-    for point in coords:  # Data points
-        x, y = int(point.x), int(point.y)
-        surf.set_at((x, y), GREEN)  # Color pixel
-
-
-def render_peak(surf, point):
-    pygame.draw.circle(surf, WHITE, (point.x, point.y), 3, 1)  # Peak centre
-
-
-def render_shore_noise(surf, points):
-    """ Renders an aaline of a series of points. """
-    point_list = [(x + 50, -y + 800) for x, y in points]  # Up is -ve
-    pygame.draw.line(surf, CYAN, (50, 800), (410, 800), 1)  # x-axis
-    pygame.draw.line(surf, CYAN, (50, 800), (50, 700), 1)  # y-axis
-
-    for x, y in point_list:  # points
-        surf.set_at((int(x), int(y)), RED)
-
-
-def render_lines(surf, line_cells):
-    """ Renders an aaline of a series of points. """
-    for cell in line_cells:
-        surf.set_at(cell.tuple('2D'), YELLOW)
-
-
 def flood_fill(surf):
     print('Flood filling')
     WHITE = (255, 255, 255, 255)
@@ -195,70 +167,70 @@ def main():
 
     args = setup_args()
 
-    print(args.pygame)
-
-    print('Pyland Gen 1.0')
-    pygame.init()
-    clock = pygame.time.Clock()
-    surface = setup_screen()
-
     generator = IslandGenerator()
     radius = 200
-    result = 'regen'
-    while True:
-        clock.tick(10)
 
-        if result == 'quit':
-            pygame.quit()
-            sys.exit()
-        elif result == 'span':
-            sign = +1 if shifted else -1
-            generator.span += sign * 1
-            result = 'regen'
-        elif result == 'scale':
-            sign = +1 if shifted else -1
-            generator.scale += sign * 10
-            result = 'regen'
-        elif result == 'octaves':
-            sign = +1 if shifted else -1
-            generator.octaves += sign * 1
-            result = 'regen'
-        if result == 'regen':
-            surface.fill(BLACK)
-            shore_noise = generator.gen_border(points=360)  # Generate random noise
-            render_shore_noise(surface, shore_noise)  # Draw it
+    if args.pygame:
+        print('Pyland Gen 1.0')
+        pygame.init()
+        clock = pygame.time.Clock()
+        surface = setup_screen()
 
-            polar_shore = apply_noise_to_circle(shore_noise, radius=radius)  # Wrap it around a circle
-            rect_shore = [cell.Cell(polar_to_rectangular(x)) for x in polar_shore]  # Conver to (x, y)
+        result = 'regen'
+        while True:
+            clock.tick(10)
 
-            shore_lines = []
-            for index, point in enumerate(rect_shore[:-1]):  # All but last one
-                start = point
-                end = rect_shore[index + 1]  # Next point
-                _line = line.Line(start, end)
-                pixel_line = _line.discretize()
-                shore_lines.append(pixel_line)
-            for _line in shore_lines:
-                render_lines(surface, _line)
+            if result == 'quit':
+                pygame.quit()
+                sys.exit()
+            elif result == 'span':
+                sign = +1 if shifted else -1
+                generator.span += sign * 1
+                result = 'regen'
+            elif result == 'scale':
+                sign = +1 if shifted else -1
+                generator.scale += sign * 10
+                result = 'regen'
+            elif result == 'octaves':
+                sign = +1 if shifted else -1
+                generator.octaves += sign * 1
+                result = 'regen'
+            if result == 'regen':
+                surface.fill(BLACK)
+                shore_noise = generator.gen_border(points=360)  # Generate random noise
+                render.render_shore_noise(surface, shore_noise)  # Draw it
 
-            peak = generator.define_peak(polar_shore)
-            lines = generator.gen_spokes(rect_shore, peak)
-            spokes = [x.discretize() for x in lines]
-            for spoke in spokes:
-                render_lines(surface, spoke)
-                spoke_noise = generator.gen_border(points=len(spoke))
-                spoke_noise = apply_peak_height(spoke_noise, peak)
-                spoke_cells = [cell.Cell(pixel.x, pixel.y, z) for pixel, (_, z) in zip(spoke, spoke_noise)]
+                polar_shore = apply_noise_to_circle(shore_noise, radius=radius)  # Wrap it around a circle
+                rect_shore = [cell.Cell(polar_to_rectangular(x)) for x in polar_shore]  # Conver to (x, y)
 
-            render_island(surface, rect_shore, radius)  # Graph island
-            render_peak(surface, peak)
+                shore_lines = []
+                for index, point in enumerate(rect_shore[:-1]):  # All but last one
+                    start = point
+                    end = rect_shore[index + 1]  # Next point
+                    _line = line.Line(start, end)
+                    pixel_line = _line.discretize()
+                    shore_lines.append(pixel_line)
+                for _line in shore_lines:
+                    render.render_lines(surface, _line)
 
-            # flood_fill(surface)  # Fill Island w/ color
-            pygame.display.flip()
+                peak = generator.define_peak(polar_shore)
+                lines = generator.gen_spokes(rect_shore, peak)
+                spokes = [x.discretize() for x in lines]
+                for spoke in spokes:
+                    render.render_lines(surface, spoke)
+                    spoke_noise = generator.gen_border(points=len(spoke))
+                    spoke_noise = apply_peak_height(spoke_noise, peak)
+                    spoke_cells = [cell.Cell(pixel.x, pixel.y, z) for pixel, (_, z) in zip(spoke, spoke_noise)]
 
-        result = get_input()
-        if result and len(result) > 1:
-            result, shifted = result
+                render.render_island(surface, rect_shore, radius)  # Graph island
+                render.render_peak(surface, peak)
+
+                # flood_fill(surface)  # Fill Island w/ color
+                pygame.display.flip()
+
+            result = get_input()
+            if result and len(result) > 1:
+                result, shifted = result
 
 
 if __name__ == '__main__':
