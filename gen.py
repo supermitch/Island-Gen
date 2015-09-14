@@ -11,7 +11,8 @@ import pygame
 from pygame.locals import *
 from noise import pnoise1, pnoise2, snoise2
 
-import cell, line
+import cell
+import line
 
 
 BEIGE = (200, 200, 100)
@@ -213,17 +214,18 @@ def main():
             render_shore_noise(surface, shore_noise)  # Draw it
 
             polar_shore = apply_noise_to_circle(shore_noise, radius=radius)  # Wrap it around a circle
-            rect_shore = [cell.Cell(*polar_to_rectangular(x)) for x in polar_shore]  # Conver to (x, y)
+            rect_shore = [cell.Cell(polar_to_rectangular(x)) for x in polar_shore]  # Conver to (x, y)
 
             shore_lines = []
             for index, point in enumerate(rect_shore[:-1]):  # All but last one
                 start = point
                 end = rect_shore[index + 1]  # Next point
-                print(start, end)
-                line = cell.discretize_line(start, end)
-                shore_lines.append(line)
-            for line in shore_lines:
-                render_lines(surface, line)
+                _line = line.Line(start, end)
+                print(_line)
+                pixel_line = _line.discretize()
+                shore_lines.append(pixel_line)
+            for _line in shore_lines:
+                render_lines(surface, _line)
 
             peak = generator.define_peak(polar_shore)
             lines = generator.gen_spokes(rect_shore, peak)
