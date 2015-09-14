@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import division
+import argparse
 import collections
 import itertools
 import math
@@ -23,6 +24,15 @@ YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 CYAN = (0, 255, 255)
+
+
+def setup_args():
+    parser = argparse.ArgumentParser('Island Generator')
+    parser.add_argument('-p', '--pygame', action='store_true',
+                        help='Render the Island using PyGame')
+    parser.add_argument('-m', '--matplotlib', action='store_true',
+                        help='Render the Island using Matplotlib')
+    return parser.parse_args()
 
 
 def setup_screen(screen_size=(900, 900)):
@@ -182,6 +192,11 @@ def get_input():
 
 
 def main():
+
+    args = setup_args()
+
+    print(args.pygame)
+
     print('Pyland Gen 1.0')
     pygame.init()
     clock = pygame.time.Clock()
