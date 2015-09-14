@@ -28,8 +28,7 @@ def test_discretize_line_45():
     start = cell.Cell(0, 0)
     end = cell.Cell(-3, -3)
     _line = line.Line(start, end)
-    coords = [(0, 0), (-1, -1), (-2, -2), (-3, -3)]
-    expected = [cell.Cell(x) for x in coords]
+    expected = [cell.Cell(x) for x in ((0, 0), (-1, -1), (-2, -2), (-3, -3))]
     assert _line.discretize() == expected
 
 def test_discretize_line_27():

@@ -57,6 +57,9 @@ class Cell(object):
     def __iter__(self):
         return iter([self.x, self.y, self.z])
 
+    def __hash__(self):
+        return hash(repr(self))
+
     def __str__(self):
         return '({}, {}, {})'.format(self.x, self.y, self.z)
 

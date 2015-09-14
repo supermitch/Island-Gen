@@ -1,5 +1,7 @@
 import math
 
+import cell
+import geometry
 
 class Line(object):
     """
@@ -31,20 +33,20 @@ class Line(object):
         start = self.start
         results = [start]
         seen = set()
-        while start != (self.end.x, self.end.y):  # Check in 2D only
+        while (start.x, start.y) != (self.end.x, self.end.y):  # Check in 2D only
             neighbours = start.neighbours()
             neighbours = cell.restrict_quadrants(neighbours, start, self.end)
 
             next_cell = None
             min_distance = float('inf')
-            for cell in neighbours:
-                if cell in seen:  # Don't go backwards
+            for _cell in neighbours:
+                if _cell in seen:  # Don't go backwards
                     continue
-                intersection = geometry.right_intersection(cell, self)
-                distance = cell.distance(intersection)
+                intersection = geometry.right_intersection(_cell, self)
+                distance = _cell.distance(intersection)
                 if distance < min_distance:
                     min_distance = distance
-                    next_cell = cell
+                    next_cell = _cell
             results.append(next_cell)
             if len(results) > max_length:  # Failed!
                 print('Found too many cells. Aborting.')
