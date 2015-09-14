@@ -22,6 +22,38 @@ class Line(object):
         else:
             return math.sqrt(d_squared)
 
+    def discretize():
+        """
+        Turn a line into a list of integer (x, y) Cells forming a line.
+        """
+        max_length = abs(self.end.y - self.start.y) + abs(self.end.x - self.start.x) + 1  # Plus start
+
+        start = self.start
+        results = [start]
+        seen = set()
+        while start != (self.end.x, self.end.y):  # Check in 2D only
+            neighbours = start.neighbours()
+            neighbours = cell.restrict_quadrants(neighbours, start, self.end)
+
+            next_cell = None
+            min_distance = float('inf')
+            for cell in neighbours:
+                if cell in seen:  # Don't go backwards
+                    continue
+                intersection = geometry.right_intersection(cell, self)
+                distance = cell.distance(intersection)
+                if distance < min_distance:
+                    min_distance = distance
+                    next_cell = cell
+            results.append(next_cell)
+            if len(results) > max_length:  # Failed!
+                print('Found too many cells. Aborting.')
+                return None
+            seen.add(next_cell)
+            start = next_cell
+        return results
+
+
     def __str__(self):
         return '({}, {})'.format(self.start, self.end)
 

@@ -64,8 +64,11 @@ class Cell(object):
         return 'cell.Cell({}, {}, {})'.format(self.x, self.y, self.z)
 
 
-
 def restrict_quadrants(neighbours, start, end):
+    """
+    Only return the quadrants of a set of neighbours that are
+    oriented in the direction of 'end' Cell.
+    """
     cells = neighbours[:]
     if end.x > start.x:
         cells = [x for x in cells if x.x >= start.x]
@@ -76,57 +79,4 @@ def restrict_quadrants(neighbours, start, end):
     elif end.y < start.y:
         cells = [x for x in cells if x.y <= start.y]
     return cells
-
-
-def right_intersection(point, line):
-    """
-    Determine the point at which a point is closest to a line
-
-    A line through that point would intersect at a right angle.
-    """
-    if line.start.y == line.end.y:  # line is horizontal (same y values)
-        x, y = point.x, line.start.y
-    elif line.start.x == line.end.x:  # line is vertical (same x values)
-        x, y = line.start.x, point.y
-    else:
-        m = (line.end.y - line.start.y) / (line.end.x - line.start.x)  # slope
-        b = line.start.y - m * line.start.x  # y-intercept
-        c = point.y + point.x / m  # y-intercept of intersecting line
-        x = m * (c - b) / (m ** 2 + 1)  # x-coord of intersection
-        y = m * x + b  # y-coord of intersection
-    return Cell(x, y)
-
-
-def discretize_line(start, end):
-    """
-    Turn start and end points (which are integer (x, y) tuples) into
-    a list of integer (x, y) points forming a line.
-    """
-    max_length = abs(end.y - start.y) + abs(end.x - start.x) + 1  # Plus start
-
-    Line = collections.namedtuple('Line', 'start, end')
-    line = Line(start, end)
-    results = [start]
-    seen = set()
-    while start != (end.x, end.y):  # Check in 2D only
-        neighbours = start.neighbours()
-        neighbours = restrict_quadrants(neighbours, start, end)
-
-        next_cell = None
-        min_distance = float('inf')
-        for cell in neighbours:
-            if cell in seen:  # Don't go backwards
-                continue
-            intersection = right_intersection(cell, line)
-            distance = cell.distance(intersection)
-            if distance < min_distance:
-                min_distance = distance
-                next_cell = cell
-        results.append(next_cell)
-        if len(results) > max_length:  # Failed!
-            print('Found too many cells. Aborting.')
-            return None
-        seen.add(next_cell)
-        start = next_cell
-    return results
 

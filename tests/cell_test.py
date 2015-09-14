@@ -32,3 +32,15 @@ def test_point_distance_angle():
     assert start.distance(end) == 5.0  # 3-4-5 triangle
     assert start.distance(end, squared=True) == 25.0
 
+def test_restrict_quadrants():
+    neighbours = [
+        (5, 6), (5, 4),
+        (6, 5), (6, 6), (6, 4),
+        (4, 5), (4, 6), (4, 4),
+    ]
+    start = (5, 5)
+    end = (10, 10)
+    expected = [(5, 6),  (6, 5), (6, 6)]
+    results = cell.restrict_quadrants(neighbours, start, end)
+    assert results == expected
+

@@ -1,21 +1,6 @@
 import cell
 
 
-def test_get_neighbours():
-    start = (5, 5)
-    expected = [
-        (5, 5), (5, 6), (5, 4),
-        (6, 5), (6, 6), (6, 4),
-        (4, 5), (4, 6), (4, 4),
-    ]
-    results = cell.get_neighbours(start, include_self=True)
-    assert results == expected
-
-    del expected[expected.index(start)]  # Eliminate start cell from expected
-    results = cell.get_neighbours(start)
-    assert results == expected
-
-
 def test_restrict_quadrants():
     neighbours = [
         (5, 6), (5, 4),
@@ -49,22 +34,6 @@ def test_right_intersection_vertical_line():
     point = (3, 2)
     result = cell.right_intersection(point, line)  # Fails
     assert result == (1, 2)
-
-
-def test_point_distance_direct():
-    start = (3, 3)
-    end = (6, 3)
-    result = cell.point_distance(start, end)
-    assert result == 3.0
-
-    result = cell.point_distance(start, end, squared=True)
-    assert result == 9.0
-
-def test_point_distance_angle():
-    start = (0, 0)
-    end = (3, 4)
-    result = cell.point_distance(start, end)
-    assert result == 5.0  # 3-4-5 triangle
 
 def test_discretize_line_simple():
     start = (0, 0)
