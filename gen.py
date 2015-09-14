@@ -130,7 +130,7 @@ def render_shore_noise(surf, points):
 def render_lines(surf, line_cells):
     """ Renders an aaline of a series of points. """
     for cell in line_cells:
-        surf.set_at(cell, YELLOW)
+        surf.set_at(cell.tuple('2D'), YELLOW)
 
 
 def flood_fill(surf):

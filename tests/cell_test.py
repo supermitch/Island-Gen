@@ -38,6 +38,15 @@ def test_point_distance_angle():
     assert start.distance(end) == 5.0  # 3-4-5 triangle
     assert start.distance(end, squared=True) == 25.0
 
+def test_tuple():
+    _cell = cell.Cell(3, 5, 7)
+    assert _cell.tuple() == (3, 5, 7)
+    assert _cell.tuple('3D') == (3, 5, 7)
+    assert _cell.tuple('2D') == (3, 5)
+
+    _cell = cell.Cell(3, 5)
+    assert _cell.tuple() == (3, 5, 0)
+
 def test_restrict_quadrants():
     coords = [
         (5, 6), (5, 4),

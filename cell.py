@@ -45,6 +45,15 @@ class Cell(object):
         else:
             return math.sqrt(d_squared)
 
+    def tuple(self, dimensions='3D'):
+        """
+        Convert a cell to 2D or 3D tuple.
+        """
+        if '2' in dimensions:
+            return (self.x, self.y)
+        else:
+            return tuple(self)
+
     def __eq__(self, other):
         return all([self.x == other.x, self.y == other.y, self.z == other.z])
 
