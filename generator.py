@@ -4,10 +4,10 @@ import random
 
 from noise import pnoise1, pnoise2, snoise2
 
-import cell
+from cell import Cell
 import geometry
-import island
-import line
+from island import Island
+from line import Line
 
 
 class IslandGenerator():
@@ -55,13 +55,13 @@ class IslandGenerator():
                 break  # Exit loop
         height = random.randint(20, 200)
         x, y = geometry.polar_to_rectangular((radius, angle))
-        return cell.Cell(x, y, height)
+        return Cell(x, y, height)
 
     def gen_spokes(self, rect_shore, peak):
         """
         Generate a list of lines (spokes) from start to end positions.
         """
-        return [line.Line(point, peak) for point in rect_shore[::60]]
+        return [Line(point, peak) for point in rect_shore[::60]]
 
     def apply_noise_to_circle(self, border):
         """ Apply our noisy 'border' to our base circle. """
@@ -78,19 +78,19 @@ class IslandGenerator():
         return output_noise
 
     def generate_island(self):
-        isle = island.Island()
+        isle = Island()
         isle.radius = self.initial_radius
 
         isle.shore_noise = self.gen_border(points=360)  # Generate random noise
 
         polar_shore = self.apply_noise_to_circle(isle.shore_noise)  # Wrap it around a circle
-        isle.rect_shore = [cell.Cell(geometry.polar_to_rectangular(x)) for x in polar_shore]  # Conver to (x, y)
+        isle.rect_shore = [Cell(geometry.polar_to_rectangular(x)) for x in polar_shore]  # Conver to (x, y)
 
         isle.shore_lines = []
         for index, point in enumerate(isle.rect_shore[:-1]):  # All but last one
             start = point
             end = isle.rect_shore[index + 1]  # Next point
-            _line = line.Line(start, end)
+            _line = Line(start, end)
             pixel_line = _line.discretize()
             isle.shore_lines.append(pixel_line)
 
@@ -100,7 +100,7 @@ class IslandGenerator():
         for spoke in isle.spokes:
             spoke_noise = self.gen_border(points=len(spoke))
             spoke_noise = self.apply_peak_height(spoke_noise, isle.peak)
-            spoke_cells = [cell.Cell(pixel.x, pixel.y, z) for pixel, (_, z) in zip(spoke, spoke_noise)]
+            spoke_cells = [Cell(pixel.x, pixel.y, z) for pixel, (_, z) in zip(spoke, spoke_noise)]
 
         return isle
 
