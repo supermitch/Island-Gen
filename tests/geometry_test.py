@@ -1,6 +1,15 @@
+import math
+
 import cell
 import geometry
 import line
+
+
+def test_polar_to_rectangular():
+    assert geometry.polar_to_rectangular((20, 0), 0, 0) == (20, 0)
+    assert geometry.polar_to_rectangular((5, math.pi), 0, 0) == (-5, 0)
+    assert geometry.polar_to_rectangular((5, math.pi / 2), 0, 0) == (0, 5)
+    assert geometry.polar_to_rectangular((5, 0), 20, 20) == (25, 20)
 
 
 def test_right_intersection():
