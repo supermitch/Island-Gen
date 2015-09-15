@@ -5,6 +5,9 @@ import cell
 
 
 def polar_to_rectangular(polar_coords, offset_x=450, offset_y=450):
+    """
+    Convert polar coordinates to rectangular, with a given x, y offset.
+    """
     r, theta = polar_coords
     return int(r * math.cos(theta) + offset_x), int(r * math.sin(theta) + offset_y)
 
