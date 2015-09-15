@@ -15,16 +15,7 @@ from noise import pnoise1, pnoise2, snoise2
 import cell
 import line
 import render
-
-
-BEIGE = (200, 200, 100)
-BLACK = (0, 0, 0)
-BLUE = (0, 0, 200)
-GREEN = (0, 255, 0)
-YELLOW = (255, 255, 0)
-RED = (255, 0, 0)
-WHITE = (255, 255, 255)
-CYAN = (0, 255, 255)
+from generator import IslandGenerator
 
 
 def setup_args():
@@ -41,61 +32,6 @@ def setup_screen(screen_size=(900, 900)):
     pygame.display.set_caption('Pyland Gen 1.0')
     return surf
 
-
-class IslandGenerator():
-    """ Generates a random graph of noise. (Not really an Island) """
-    def __init__(self):
-        """ Initialize some pnoise generator defaults. """
-        self.span = 8.0
-        self.octaves = 8
-        self.scale = 40
-
-    def gen_border(self, points):
-        """
-        Generate a border to apply to our island to build shoreline.
-
-        Returns a list of (x, y) points of generated pnoise.
-
-        - Points is the number of points in the returned list.
-        """
-        base = random.randint(0, 5000)
-        border = []
-        for i in range(points + 1):
-            x = float(i) * self.span / points
-            y = pnoise1(x + base, self.octaves) * 1
-            y += pnoise1(x + base, self.octaves + 4) * 2
-            y *= self.scale
-            border.append((i, y))
-        return border
-
-    def define_peak(self, polar_shore, scale=20):
-        while True:
-            alpha = 4.0
-            theta = 1.0
-            beta = 1.0 / theta
-            var = random.gammavariate(alpha, beta)
-            radius = var * scale
-            angle = random.randint(0, 360)  # Random orientation
-            for r, _ in polar_shore:
-                if r < radius:  # Check that peak is within shoreline
-                    break  # Repeat generation
-            else:
-                break  # Exit loop
-        height = random.randint(20, 200)
-        x, y = polar_to_rectangular((radius, angle))
-        return cell.Cell(x, y, height)
-
-    def gen_spokes(self, rect_shore, peak):
-        """
-        Generate a list of lines (spokes) from start to end positions.
-        """
-        return [line.Line(point, peak) for point in rect_shore[::60]]
-
-
-
-def polar_to_rectangular(polar_coords, offset_x=450, offset_y=450):
-    r, theta = polar_coords
-    return int(r * math.cos(theta) + offset_x), int(r * math.sin(theta) + offset_y)
 
 
 def apply_noise_to_circle(border, radius=200):
@@ -164,6 +100,7 @@ def get_input():
 
 
 def main():
+    print('Pyland Gen 1.0')
 
     args = setup_args()
 
@@ -171,7 +108,6 @@ def main():
     radius = 200
 
     if args.pygame:
-        print('Pyland Gen 1.0')
         pygame.init()
         clock = pygame.time.Clock()
         surface = setup_screen()
@@ -196,9 +132,9 @@ def main():
                 generator.octaves += sign * 1
                 result = 'regen'
             if result == 'regen':
-                surface.fill(BLACK)
+
+
                 shore_noise = generator.gen_border(points=360)  # Generate random noise
-                render.render_shore_noise(surface, shore_noise)  # Draw it
 
                 polar_shore = apply_noise_to_circle(shore_noise, radius=radius)  # Wrap it around a circle
                 rect_shore = [cell.Cell(polar_to_rectangular(x)) for x in polar_shore]  # Conver to (x, y)
@@ -210,20 +146,23 @@ def main():
                     _line = line.Line(start, end)
                     pixel_line = _line.discretize()
                     shore_lines.append(pixel_line)
-                for _line in shore_lines:
-                    render.render_lines(surface, _line)
 
                 peak = generator.define_peak(polar_shore)
                 lines = generator.gen_spokes(rect_shore, peak)
                 spokes = [x.discretize() for x in lines]
                 for spoke in spokes:
-                    render.render_lines(surface, spoke)
                     spoke_noise = generator.gen_border(points=len(spoke))
                     spoke_noise = apply_peak_height(spoke_noise, peak)
                     spoke_cells = [cell.Cell(pixel.x, pixel.y, z) for pixel, (_, z) in zip(spoke, spoke_noise)]
 
+                surface.fill(BLACK)
+                render.render_shore_noise(surface, shore_noise)  # Draw it
                 render.render_island(surface, rect_shore, radius)  # Graph island
                 render.render_peak(surface, peak)
+                for spoke in spokes:
+                    render.render_lines(surface, spoke)
+                for _line in shore_lines:
+                    render.render_lines(surface, _line)
 
                 # flood_fill(surface)  # Fill Island w/ color
                 pygame.display.flip()

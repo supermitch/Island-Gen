@@ -3,6 +3,11 @@ from __future__ import division
 import cell
 
 
+def polar_to_rectangular(polar_coords, offset_x=450, offset_y=450):
+    r, theta = polar_coords
+    return int(r * math.cos(theta) + offset_x), int(r * math.sin(theta) + offset_y)
+
+
 def right_intersection(point, line):
     """
     Determine the point at which a point is closest to a line
