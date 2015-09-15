@@ -33,53 +33,6 @@ def setup_screen(screen_size=(900, 900)):
     return surf
 
 
-
-def apply_noise_to_circle(border, radius=200):
-    """ Apply our noisy 'border' to our base circle. """
-    radii = (radius + y for _, y in border)  # Adjust radii
-    angles = (x * math.pi / 180.0 for x, _ in border)  # Convert to radians
-    return zip(radii, angles)
-
-
-def apply_peak_height(spoke_noise, peak):
-    output_noise = []
-    for i, (x, y) in enumerate(spoke_noise):
-        dy = i / (len(spoke_noise) - 1) * peak.z
-        y += dy
-        output_noise.append((x, y))
-
-    return output_noise
-
-
-def flood_fill(surf):
-    print('Flood filling')
-    WHITE = (255, 255, 255, 255)
-    screen_size = surf.get_size()
-    center_x, center_y = screen_size[0]/2, screen_size[1]/2
-    start_color = surf.get_at((center_x, center_y))  # Black
-    seen = set()
-    start = (center_x, center_y)
-    stack = [start]
-    while True:
-        adjacent = False  # Has no adjacent unvisited pixels
-        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:  # Check 4 neighbours
-            x, y = start.x + dx, start.y + dy
-            if (x, y) in seen:
-                continue
-            else:
-                if surf.get_at((x, y)) == start_color:
-                    adjacent = True
-                    stack.append((x, y))
-                    surf.set_at((x, y), WHITE)  # Set color to white
-                    seen.add((x, y))
-        if not adjacent:
-            stack.pop()
-        if not stack:
-            break
-        else:
-            start = stack[-1]
-
-
 def get_input():
     """ Wait for input. """
     for event in pygame.event.get():
@@ -164,7 +117,7 @@ def main():
                 for _line in shore_lines:
                     render.render_lines(surface, _line)
 
-                # flood_fill(surface)  # Fill Island w/ color
+                # render.flood_fill(surface)  # Fill Island w/ color
                 pygame.display.flip()
 
             result = get_input()

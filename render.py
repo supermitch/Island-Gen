@@ -26,7 +26,7 @@ def render_peak(surf, point):
 
 
 def render_shore_noise(surf, points):
-    """ Renders an aaline of a series of points. """
+    """ Renders a 2D graph of a series of points. """
     point_list = [(x + 50, -y + 800) for x, y in points]  # Up is -ve
     pygame.draw.line(surf, CYAN, (50, 800), (410, 800), 1)  # x-axis
     pygame.draw.line(surf, CYAN, (50, 800), (50, 700), 1)  # y-axis
@@ -39,4 +39,33 @@ def render_lines(surf, line_cells):
     """ Renders an aaline of a series of points. """
     for cell in line_cells:
         surf.set_at(cell.tuple('2D'), YELLOW)
+
+
+def flood_fill(surf):
+    print('Flood filling')
+    WHITE = (255, 255, 255, 255)
+    screen_size = surf.get_size()
+    center_x, center_y = screen_size[0]/2, screen_size[1]/2
+    start_color = surf.get_at((center_x, center_y))  # Black
+    seen = set()
+    start = (center_x, center_y)
+    stack = [start]
+    while True:
+        adjacent = False  # Has no adjacent unvisited pixels
+        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:  # Check 4 neighbours
+            x, y = start.x + dx, start.y + dy
+            if (x, y) in seen:
+                continue
+            else:
+                if surf.get_at((x, y)) == start_color:
+                    adjacent = True
+                    stack.append((x, y))
+                    surf.set_at((x, y), WHITE)  # Set color to white
+                    seen.add((x, y))
+        if not adjacent:
+            stack.pop()
+        if not stack:
+            break
+        else:
+            start = stack[-1]
 
