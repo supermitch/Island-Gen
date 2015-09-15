@@ -5,5 +5,5 @@ run:
 	@python gen.py  # Pygame doesn't live in our virtualenv
 
 test:
-	$(ROOT_DIR)/$(VENV)/nosetests --verbose --detailed-errors --with-coverage --cover-inclusive --cover-tests
+	$(ROOT_DIR)/$(VENV)/nosetests --verbose --detailed-errors --with-coverage --cover-tests
 
