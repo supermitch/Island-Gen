@@ -10,7 +10,6 @@ import sys
 
 import pygame
 from pygame.locals import *
-from noise import pnoise1, pnoise2, snoise2
 
 import cell
 import line
@@ -25,12 +24,6 @@ def setup_args():
     parser.add_argument('-m', '--matplotlib', action='store_true',
                         help='Render the Island using Matplotlib')
     return parser.parse_args()
-
-
-def setup_screen(screen_size=(900, 900)):
-    surf = pygame.display.set_mode(screen_size, RESIZABLE)
-    pygame.display.set_caption('Pyland Gen 1.0')
-    return surf
 
 
 def get_input():
@@ -65,7 +58,7 @@ def main():
     else:
         pygame.init()
         clock = pygame.time.Clock()
-        surface = setup_screen()
+        renderer = render.Renderer((900, 900))
 
         result = 'regen'
         while True:
@@ -87,12 +80,8 @@ def main():
                 generator.octaves += sign * 1
                 result = 'regen'
             if result == 'regen':
-
                 island = generator.generate_island()
-
-                surface.fill(BLACK)
-                render.render_island(surface, island)
-                pygame.display.flip()
+                renderer.render_island(island)
 
             result = get_input()
             if result and len(result) > 1:

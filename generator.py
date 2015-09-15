@@ -1,6 +1,13 @@
 from __future__ import division
+import math
+import random
 
+from noise import pnoise1, pnoise2, snoise2
+
+import cell
 import geometry
+import island
+import line
 
 
 class IslandGenerator():
@@ -47,7 +54,7 @@ class IslandGenerator():
             else:
                 break  # Exit loop
         height = random.randint(20, 200)
-        x, y = polar_to_rectangular((radius, angle))
+        x, y = geometry.polar_to_rectangular((radius, angle))
         return cell.Cell(x, y, height)
 
     def gen_spokes(self, rect_shore, peak):
@@ -72,10 +79,11 @@ class IslandGenerator():
 
     def generate_island(self):
         isle = island.Island()
+        isle.radius = self.initial_radius
 
         isle.shore_noise = self.gen_border(points=360)  # Generate random noise
 
-        polar_shore = self.apply_noise_to_circle(shore_noise)  # Wrap it around a circle
+        polar_shore = self.apply_noise_to_circle(isle.shore_noise)  # Wrap it around a circle
         isle.rect_shore = [cell.Cell(geometry.polar_to_rectangular(x)) for x in polar_shore]  # Conver to (x, y)
 
         isle.shore_lines = []
@@ -89,9 +97,9 @@ class IslandGenerator():
         isle.peak = self.define_peak(polar_shore)
         lines = self.gen_spokes(isle.rect_shore, isle.peak)
         isle.spokes = [x.discretize() for x in lines]
-        for spoke in spokes:
+        for spoke in isle.spokes:
             spoke_noise = self.gen_border(points=len(spoke))
-            spoke_noise = self.apply_peak_height(spoke_noise, peak)
+            spoke_noise = self.apply_peak_height(spoke_noise, isle.peak)
             spoke_cells = [cell.Cell(pixel.x, pixel.y, z) for pixel, (_, z) in zip(spoke, spoke_noise)]
 
         return isle
