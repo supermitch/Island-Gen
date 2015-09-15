@@ -1,3 +1,5 @@
+from __future__ import division
+
 import pygame
 from pygame.locals import *
 
@@ -12,7 +14,7 @@ WHITE = (255, 255, 255)
 CYAN = (0, 255, 255)
 
 
-def render_island(surf, coords, radius):
+def render_shore(surf, coords, radius):
     """ Renders an aaline of a series of points. """
     pygame.draw.circle(surf, RED, (450, 450), radius, 1)  # Original centre
     # pygame.draw.aalines(surf, BEIGE, True, coords, False)  # Island shore
@@ -68,4 +70,14 @@ def flood_fill(surf):
             break
         else:
             start = stack[-1]
+
+def render_island(surface, island):
+    render.render_shore_noise(surface, island.shore_noise)  # Draw it
+    render.render_shore(surface, island.rect_shore, island.radius)  # Graph island
+    render.render_peak(surface, island.peak)
+    for spoke in island.spokes:
+        render.render_lines(surface, spoke)
+    for _line in island.shore_lines:
+        render.render_lines(surface, _line)
+    # render.flood_fill(surface, island)  # Fill Island w/ color
 

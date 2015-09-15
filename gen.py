@@ -57,10 +57,12 @@ def main():
 
     args = setup_args()
 
-    generator = IslandGenerator()
-    radius = 200
+    generator = IslandGenerator(radius=200)
 
-    if args.pygame:
+    if not args.pygame:
+        island = generator.generate_island()
+        print(island)
+    else:
         pygame.init()
         clock = pygame.time.Clock()
         surface = setup_screen()
@@ -86,38 +88,10 @@ def main():
                 result = 'regen'
             if result == 'regen':
 
-
-                shore_noise = generator.gen_border(points=360)  # Generate random noise
-
-                polar_shore = apply_noise_to_circle(shore_noise, radius=radius)  # Wrap it around a circle
-                rect_shore = [cell.Cell(polar_to_rectangular(x)) for x in polar_shore]  # Conver to (x, y)
-
-                shore_lines = []
-                for index, point in enumerate(rect_shore[:-1]):  # All but last one
-                    start = point
-                    end = rect_shore[index + 1]  # Next point
-                    _line = line.Line(start, end)
-                    pixel_line = _line.discretize()
-                    shore_lines.append(pixel_line)
-
-                peak = generator.define_peak(polar_shore)
-                lines = generator.gen_spokes(rect_shore, peak)
-                spokes = [x.discretize() for x in lines]
-                for spoke in spokes:
-                    spoke_noise = generator.gen_border(points=len(spoke))
-                    spoke_noise = apply_peak_height(spoke_noise, peak)
-                    spoke_cells = [cell.Cell(pixel.x, pixel.y, z) for pixel, (_, z) in zip(spoke, spoke_noise)]
+                island = generator.generate_island()
 
                 surface.fill(BLACK)
-                render.render_shore_noise(surface, shore_noise)  # Draw it
-                render.render_island(surface, rect_shore, radius)  # Graph island
-                render.render_peak(surface, peak)
-                for spoke in spokes:
-                    render.render_lines(surface, spoke)
-                for _line in shore_lines:
-                    render.render_lines(surface, _line)
-
-                # render.flood_fill(surface)  # Fill Island w/ color
+                render.render_island(surface, island)
                 pygame.display.flip()
 
             result = get_input()

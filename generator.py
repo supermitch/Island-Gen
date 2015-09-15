@@ -1,8 +1,16 @@
+from __future__ import division
+
+import geometry
+
 
 class IslandGenerator():
-    """ Generates a random graph of noise. (Not really an Island) """
-    def __init__(self):
+    """
+    Generates an Island.
+    """
+
+    def __init__(self, radius):
         """ Initialize some pnoise generator defaults. """
+        self.initial_radius = radius
         self.span = 8.0
         self.octaves = 8
         self.scale = 40
@@ -47,4 +55,44 @@ class IslandGenerator():
         Generate a list of lines (spokes) from start to end positions.
         """
         return [line.Line(point, peak) for point in rect_shore[::60]]
+
+    def apply_noise_to_circle(self, border):
+        """ Apply our noisy 'border' to our base circle. """
+        radii = (self.initial_radius + y for _, y in border)  # Adjust radii
+        angles = (x * math.pi / 180.0 for x, _ in border)  # Convert to radians
+        return zip(radii, angles)
+
+    def apply_peak_height(self, spoke_noise, peak):
+        output_noise = []
+        for i, (x, y) in enumerate(spoke_noise):
+            dy = i / (len(spoke_noise) - 1) * peak.z
+            y += dy
+            output_noise.append((x, y))
+        return output_noise
+
+    def generate_island(self):
+        isle = island.Island()
+
+        isle.shore_noise = self.gen_border(points=360)  # Generate random noise
+
+        polar_shore = self.apply_noise_to_circle(shore_noise)  # Wrap it around a circle
+        isle.rect_shore = [cell.Cell(geometry.polar_to_rectangular(x)) for x in polar_shore]  # Conver to (x, y)
+
+        isle.shore_lines = []
+        for index, point in enumerate(isle.rect_shore[:-1]):  # All but last one
+            start = point
+            end = isle.rect_shore[index + 1]  # Next point
+            _line = line.Line(start, end)
+            pixel_line = _line.discretize()
+            isle.shore_lines.append(pixel_line)
+
+        isle.peak = self.define_peak(polar_shore)
+        lines = self.gen_spokes(isle.rect_shore, isle.peak)
+        isle.spokes = [x.discretize() for x in lines]
+        for spoke in spokes:
+            spoke_noise = self.gen_border(points=len(spoke))
+            spoke_noise = self.apply_peak_height(spoke_noise, peak)
+            spoke_cells = [cell.Cell(pixel.x, pixel.y, z) for pixel, (_, z) in zip(spoke, spoke_noise)]
+
+        return isle
 
