@@ -8,12 +8,15 @@ import math
 import random
 import sys
 
-import pygame
-from pygame.locals import *
+try:
+    import pygame
+    from pygame.locals import *
+    import render
+except ImportError:
+    pass
 
 import cell
 import line
-import render
 from generator import IslandGenerator
 
 
