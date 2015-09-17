@@ -61,7 +61,7 @@ class IslandGenerator():
         """
         Generate a list of lines (spokes) from start to end positions.
         """
-        return [Line(point, peak) for point in rect_shore[::60]]
+        return [Line(point, peak) for point in rect_shore[::43]]
 
     def apply_noise_to_circle(self, border):
         """ Apply our noisy 'border' to our base circle. """
