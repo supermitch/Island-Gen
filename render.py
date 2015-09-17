@@ -10,6 +10,7 @@ BLUE = (0, 0, 200)
 GREEN = (0, 255, 0)
 YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
+MAGENTA = (255, 0, 255)
 WHITE = (255, 255, 255)
 CYAN = (0, 255, 255)
 
@@ -42,9 +43,18 @@ class Renderer(object):
             self.surface.set_at((int(x), int(y)), RED)
 
     def render_lines(self, line_cells):
-        """ Renders an aaline of a series of points. """
+        """ Renders series of cells as pixels. """
         for cell in line_cells:
             self.surface.set_at(cell.tuple('2D'), YELLOW)
+
+    def render_tiles(self, tiles):
+        """ Renders tiles with varying shades of grey depending on height. """
+        for row in tiles:
+            for tile in row:
+                if tile is not None:
+                    z = max(0, tile.height)
+                    color = tuple([z * 255] * 3)
+                    self.surface.set_at((tile.x, tile.y), color)
 
     def flood_fill(self):
         print('Flood filling')
@@ -75,14 +85,15 @@ class Renderer(object):
                 start = stack[-1]
 
     def render_island(self, island):
-        self.surface.fill(BLACK)
-        self.render_shore_noise(island.shore_noise)  # Draw it
-        self.render_shore(island.rect_shore, island.radius)  # Graph island
-        self.render_peak(island.peak)
-        for spoke in island.spokes:
-            self.render_lines(spoke)
-        for _line in island.shore_lines:
-            self.render_lines(_line)
+        self.surface.fill(MAGENTA)
+        # self.render_shore_noise(island.shore_noise)  # Draw it
+        # self.render_shore(island.rect_shore, island.radius)  # Graph island
+        # self.render_peak(island.peak)
+        # for spoke in island.spokes:
+        #     self.render_lines(spoke)
+        # for _line in island.shore_lines:
+        #     self.render_lines(_line)
         # render.flood_fill(self.surface, island)  # Fill Island w/ color
+        self.render_tiles(island.tiles)
         pygame.display.flip()
 
