@@ -92,15 +92,19 @@ class IslandGenerator():
             end = isle.rect_shore[index + 1]  # Next point
             _line = Line(start, end)
             pixel_line = _line.discretize()
+            isle.cells_to_tiles(*pixel_line)
             isle.shore_lines.append(pixel_line)
 
         isle.peak = self.define_peak(polar_shore)
+        isle.cells_to_tiles(isle.peak)
         lines = self.gen_spokes(isle.rect_shore, isle.peak)
         isle.spokes = [x.discretize() for x in lines]
         for spoke in isle.spokes:
             spoke_noise = self.gen_border(points=len(spoke))
             spoke_noise = self.apply_peak_height(spoke_noise, isle.peak)
             spoke_cells = [Cell(pixel.x, pixel.y, z) for pixel, (_, z) in zip(spoke, spoke_noise)]
+            isle.cells_to_tiles(*spoke_cells)
 
+        isle.normalize()
         return isle
 
