@@ -95,9 +95,9 @@ class IslandGenerator():
             isle.cells_to_tiles(*pixel_line)
             isle.shore_lines.append(pixel_line)
 
-        isle.flood_fill()
 
         isle.peak = self.define_peak(polar_shore)
+        isle.flood_fill()
         isle.cells_to_tiles(isle.peak)
         lines = self.gen_spokes(isle.rect_shore, isle.peak)
         isle.spokes = [x.discretize() for x in lines]

@@ -52,37 +52,12 @@ class Renderer(object):
         for row in tiles:
             for tile in row:
                 if tile is not None:
-                    z = max(0, tile.height)
-                    color = tuple([z * 255] * 3)
+                    if tile.height < 0:
+                        color = (0, 100, 0)
+                    else:
+                        z = max(0, tile.height)
+                        color = tuple([z * 255] * 3)
                     self.surface.set_at((tile.x, tile.y), color)
-
-    def flood_fill(self):
-        print('Flood filling')
-        WHITE = (255, 255, 255, 255)
-        screen_size = self.surface.get_size()
-        center_x, center_y = screen_size[0]/2, screen_size[1]/2
-        start_color = self.surface.get_at((center_x, center_y))  # Black
-        seen = set()
-        start = (center_x, center_y)
-        stack = [start]
-        while True:
-            adjacent = False  # Has no adjacent unvisited pixels
-            for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:  # Check 4 neighbours
-                x, y = start.x + dx, start.y + dy
-                if (x, y) in seen:
-                    continue
-                else:
-                    if self.surface.get_at((x, y)) == start_color:
-                        adjacent = True
-                        stack.append((x, y))
-                        self.surface.set_at((x, y), WHITE)  # Set color to white
-                        seen.add((x, y))
-            if not adjacent:
-                stack.pop()
-            if not stack:
-                break
-            else:
-                start = stack[-1]
 
     def render_island(self, island):
         self.surface.fill(MAGENTA)

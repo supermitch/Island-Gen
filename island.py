@@ -22,28 +22,30 @@ class Island(object):
             self.tiles[x][y] = Tile(x, y, z)
 
     def flood_fill(self, start=None):
-        print('Flood filling')
+        """
+        Sets all None tiles to Tile(x, y, -1) within the island shore.
+        """
         if self.peak:
             center_x, center_y = self.peak.x, self.peak.y
         elif start:
             center_x, center_y = start.x, start.y
         else:
             raise ValueError('Must define peak or start cell for flood fill.')
-        start_color = self.surface.get_at((center_x, center_y))  # Black
+        print('Flood filling')
         seen = set()
         start = (center_x, center_y)
         stack = [start]
         while True:
             adjacent = False  # Has no adjacent unvisited pixels
             for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:  # Check 4 neighbours
-                x, y = start.x + dx, start.y + dy
+                x, y = start[0] + dx, start[1] + dy
                 if (x, y) in seen:
                     continue
                 else:
-                    if self.surface.get_at((x, y)) == start_color:
+                    if self.tiles[x][y] is None:
                         adjacent = True
                         stack.append((x, y))
-                        self.surface.set_at((x, y), WHITE)  # Set color to white
+                        self.tiles[x][y] = Tile(x, y, -1)  # Set height -1
                         seen.add((x, y))
             if not adjacent:
                 stack.pop()
@@ -62,5 +64,6 @@ class Island(object):
         for row in self.tiles:
             for tile in row:
                 if tile is not None:
-                    tile.height = float(tile.height) / max_height
+                    if tile.height > 0:  # Ignore negative tiles
+                        tile.height = float(tile.height) / max_height
 
