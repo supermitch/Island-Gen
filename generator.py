@@ -108,5 +108,6 @@ class IslandGenerator():
             isle.cells_to_tiles(*spoke_cells)
 
         isle.normalize()
+        isle.height_fill()
         return isle
 

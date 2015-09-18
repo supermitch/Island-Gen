@@ -67,3 +67,36 @@ class Island(object):
                     if tile.height > 0:  # Ignore negative tiles
                         tile.height = float(tile.height) / max_height
 
+    def height_fill(self):
+        deltas = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+        for i, row in enumerate(self.tiles):
+            for j, tile in enumerate(row):
+                if tile and tile.height == -1:
+                    averages = []
+                    for r in range(1, 20):
+                        total = 0
+                        count = 0
+                        avg = 0
+                        for x, y in deltas:  # Check 8 neighbours
+                            dx, dy = x * r, y * r
+                            try:
+                                value = self.tiles[i + dx][j + dy].height
+                            except (IndexError, AttributeError):
+                                continue
+                            total += value
+                            count += 1
+                        if total:
+                            avg = total/count
+                            averages.append(avg * 9 / r ** 0.9)  # Further away == less impact
+                    if averages:
+                        tile.height = sum(averages)/len(averages)
+
+
+
+
+
+
+
+
+
+
