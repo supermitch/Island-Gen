@@ -68,26 +68,37 @@ class Island(object):
                         tile.height = float(tile.height) / max_height
 
     def height_fill(self):
+        for row in self.tiles:
+            for tile in row:
+                if tile is not None:
+                    print(tile.height)
+        return
+
         deltas = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
         for i, row in enumerate(self.tiles):
             for j, tile in enumerate(row):
                 if tile and tile.height == -1:
                     averages = []
-                    for r in range(1, 20):
-                        total = 0
-                        count = 0
-                        avg = 0
-                        for x, y in deltas:  # Check 8 neighbours
-                            dx, dy = x * r, y * r
+                    for r in range(1, 5):
+                        ring_total = 0
+                        neighbour_count = 0
+                        ring_avg = 0
+                        for dx, dy in deltas:  # Check 8 neighbours
+                            dx, dy = dx * r, dy * r
+                            x, y = i + dx, j + dy
+                            print('x, y: {}, {}'.format(x, y))
                             try:
-                                value = self.tiles[i + dx][j + dy].height
+                                value = self.tiles[x][y].height
+                                print('value: {}'.format(value))
                             except (IndexError, AttributeError):
                                 continue
-                            total += value
-                            count += 1
-                        if total:
-                            avg = total/count
-                            averages.append(avg * 9 / r ** 0.9)  # Further away == less impact
+                            if value == -1:
+                                continue
+                            ring_total += value
+                            neighbour_count += 1
+                        if ring_total:
+                            ring_avg = ring_total/neighbour_count
+                            averages.append(ring_avg * 9 / r ** 0.9)  # Further away == less impact
                     if averages:
                         tile.height = sum(averages)/len(averages)
 
