@@ -25,5 +25,6 @@ def test_new():
 def test_find_neighbours_2D():
     m = matrix.new(4)
     results = matrix.find_neighbours_2D(m, (2, 2), 1)
-    assert results == []
+    assert results == set([(1, 2), (3, 2), (1, 3), (3, 3),
+                           (3, 1), (2, 1), (2, 3), (1, 1)])
 

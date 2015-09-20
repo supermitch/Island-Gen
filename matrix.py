@@ -25,7 +25,14 @@ def find_neighbours_2D(array, start, span):
     x, y = start  # Start coords
     rows = len(array)  # How many rows
     cols = len(array[0])  # Assume square matrix
-    return
+    offsets = get_offsets(span)
+    print(offsets)
+    neighbours = set()
+    for dx, dy in offsets:
+        i = max(0, min(x + dx, rows))
+        j = max(0, min(y + dy, cols))
+        neighbours.add((i, j))
+    return neighbours
 
 
 def new(size, value=None):
