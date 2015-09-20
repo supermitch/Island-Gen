@@ -5,6 +5,8 @@ import matrix
 
 def test_get_offsets():
     assert matrix.get_offsets(0) == set([(0, 0)])
+    assert matrix.get_offsets(1) == set([(0, 1), (-1, 1), (-1, 0), (-1, -1),
+                                         (0, -1), (1, 0), (1, -1), (1, 1)])
     assert matrix.get_offsets(2) == set([(1, 2), (-2, 1), (-2, 0), (-2, 2),
                                          (-1, 2), (2, -2), (2, 1), (2, -1),
                                          (2, 0), (-2, -1), (-1, -2), (-2, -2),
