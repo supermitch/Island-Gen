@@ -21,16 +21,19 @@ def get_offsets(span):
 def find_neighbours_2D(array, start, span):
     """
     Return neighbours in a 2D array, given a start point and range.
+
+    Checks array bounds so we don't get index errors.
     """
     x, y = start  # Start coords
     rows = len(array)  # How many rows
     cols = len(array[0])  # Assume square matrix
     offsets = get_offsets(span)
-    print(offsets)
     neighbours = set()
     for dx, dy in offsets:
-        i = max(0, min(x + dx, rows))
-        j = max(0, min(y + dy, cols))
+        i = x + dx
+        j = y + dy
+        if i < 0 or i >= rows or j < 0 or j >= cols:
+            continue  # Don't add coords outside of array bounds
         neighbours.add((i, j))
     return neighbours
 
