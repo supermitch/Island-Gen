@@ -11,7 +11,7 @@ def get_offsets(span):
         raise ValueError('Cannot return neighbours for negative distance')
 
     all_offsets = set(itertools.product([x for x in range(-span, span + 1)], repeat=2))
-    if span > 1:
+    if span >= 1:
         inner_offsets = set(itertools.product([x for x in range(-(span - 1), span)], repeat=2))
     else:
         inner_offsets = set()
