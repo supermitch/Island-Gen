@@ -75,7 +75,7 @@ class Island(object):
             for j, tile in enumerate(row):
                 if tile and tile.height == -1:
                     averages = []
-                    for span in range(1, 3):
+                    for span in range(1, 5):
                         ring_total = 0
                         neighbour_count = 0
                         ring_avg = 0
