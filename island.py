@@ -99,12 +99,8 @@ class Island(object):
                         # print('overall: {}'.format(overall))
                         tile.height = overall
 
-
-
-
-
-
-
-
-
+    @property
+    def has_empty(self):
+        return any(True if tile is None or tile.height == -1 else False
+                   for row in self.tiles for tile in row)
 
