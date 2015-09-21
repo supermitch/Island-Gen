@@ -1,5 +1,6 @@
 from __future__ import division
 
+import matrix
 from tile import Tile
 
 
@@ -70,19 +71,15 @@ class Island(object):
                         tile.height = -1
 
     def height_fill(self):
-        deltas = [(1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)]
         for i, row in enumerate(self.tiles):
             for j, tile in enumerate(row):
                 if tile and tile.height == -1:
                     averages = []
-                    for r in range(1, 3):
+                    for span in range(1, 3):
                         ring_total = 0
                         neighbour_count = 0
                         ring_avg = 0
-                        for dx, dy in deltas:  # Check 8 neighbours
-                            dx, dy = dx * r, dy * r  # TODO: This is wrong
-                            x, y = i + dx, j + dy
-                            # print('x, y: {}, {}'.format(x, y))
+                        for x, y in matrix.find_neighbours_2D(self.tiles, (i, j), span):
                             try:
                                 value = self.tiles[x][y].height
                                 # print('value: {}'.format(value))
@@ -94,8 +91,8 @@ class Island(object):
                             neighbour_count += 1
                         if ring_total:
                             ring_avg = ring_total/neighbour_count
-                            # averages.append(ring_avg * 9 / r ** 0.9)  # Further away == less impact
-                            averages.append(ring_avg * 1 / r)  # Further away == less impact
+                            # averages.append(ring_avg * 9 / span ** 0.9)  # Further away == less impact
+                            averages.append(ring_avg)  # Further away == less impact
                     if averages:
                         # print(averages)
                         overall = sum(averages)/len(averages)
