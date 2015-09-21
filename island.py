@@ -71,33 +71,34 @@ class Island(object):
                         tile.height = -1
 
     def height_fill(self):
-        for i, row in enumerate(self.tiles):
-            for j, tile in enumerate(row):
-                if tile and tile.height == -1:
-                    averages = []
-                    for span in range(1, 5):
-                        ring_total = 0
-                        neighbour_count = 0
-                        ring_avg = 0
-                        for x, y in matrix.find_neighbours_2D(self.tiles, (i, j), span):
-                            try:
-                                value = self.tiles[x][y].height
-                                # print('value: {}'.format(value))
-                            except (IndexError, AttributeError):
-                                continue
-                            if value in (0, -1):
-                                continue
-                            ring_total += value
-                            neighbour_count += 1
-                        if ring_total:
-                            ring_avg = ring_total/neighbour_count
-                            # averages.append(ring_avg * 9 / span ** 0.9)  # Further away == less impact
-                            averages.append(ring_avg)  # Further away == less impact
-                    if averages:
-                        # print(averages)
-                        overall = sum(averages)/len(averages)
-                        # print('overall: {}'.format(overall))
-                        tile.height = overall
+        while self.has_empty:
+            for i, row in enumerate(self.tiles):
+                for j, tile in enumerate(row):
+                    if tile and tile.height == -1:
+                        averages = []
+                        for span in range(1, 5):
+                            ring_total = 0
+                            neighbour_count = 0
+                            ring_avg = 0
+                            for x, y in matrix.find_neighbours_2D(self.tiles, (i, j), span):
+                                try:
+                                    value = self.tiles[x][y].height
+                                    # print('value: {}'.format(value))
+                                except (IndexError, AttributeError):
+                                    continue
+                                if value in (0, -1):
+                                    continue
+                                ring_total += value
+                                neighbour_count += 1
+                            if ring_total:
+                                ring_avg = ring_total/neighbour_count
+                                # averages.append(ring_avg * 9 / span ** 0.9)  # Further away == less impact
+                                averages.append(ring_avg)  # Further away == less impact
+                        if averages:
+                            # print(averages)
+                            overall = sum(averages)/len(averages)
+                            # print('overall: {}'.format(overall))
+                            tile.height = overall
 
     @property
     def has_empty(self):
