@@ -102,6 +102,6 @@ class Island(object):
 
     @property
     def has_empty(self):
-        return any(True if tile is None or tile.height == -1 else False
-                   for row in self.tiles for tile in row)
+        return any(True if tile.height == -1 else False
+                   for row in self.tiles for tile in row if tile is not None)
 
