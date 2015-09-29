@@ -75,20 +75,18 @@ class Island(object):
         attempt = 0
         last_empty_count = 0
         while self.has_empty:
-            empty_count = sum(1 if tile.height == -1 else 0 for row in self.tiles for tile in row if tile is not None)
+            empties = self.empties()
+            empty_count = len(empties)
             if empty_count == last_empty_count:
                 attempt += 1
                 last_empty_count = empty_count
             if attempt > 10: break;
 
             print('Island has {} empty tiles'.format(empty_count))
-            i_values = list(range(len(self.tiles)))
-            random.shuffle(i_values)
-            j_values = list(range(len(self.tiles[0])))
-            random.shuffle(j_values)
-            while i_values:
-                print('\t{} tiles remaining'.format(len(i_values)))
-                i, j = i_values.pop(), j_values.pop()
+            random.shuffle(empties)
+            while empties:
+                print('\t{} tiles remaining'.format(len(empties)))
+                i, j = empties.pop()
                 tile = self.tiles[i][j]
                 if tile and tile.height == -1:
                     averages = []
@@ -120,4 +118,12 @@ class Island(object):
     def has_empty(self):
         return any(True if tile.height == -1 else False
                    for row in self.tiles for tile in row if tile is not None)
+
+    def empties(self):
+        empty_cells = []
+        for i in range(len(self.tiles)):
+            for j in range(len(self.tiles[0])):
+                if self.tiles[i][j] is not None and self.tiles[i][j].height == -1:
+                    empty_cells.append((i, j))
+        return empty_cells
 
