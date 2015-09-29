@@ -72,8 +72,15 @@ class Island(object):
                         tile.height = -1
 
     def height_fill(self):
+        attempt = 0
+        last_empty_count = 0
         while self.has_empty:
             empty_count = sum(1 if tile.height == -1 else 0 for row in self.tiles for tile in row if tile is not None)
+            if empty_count == last_empty_count:
+                attempt += 1
+                last_empty_count = empty_count
+            if attempt > 10: break;
+
             print('Island has {} empty tiles'.format(empty_count))
             i_values = list(range(len(self.tiles)))
             random.shuffle(i_values)
