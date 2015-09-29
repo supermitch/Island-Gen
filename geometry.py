@@ -4,7 +4,7 @@ import math
 import cell
 
 
-def polar_to_rectangular(polar_coords, offset_x=450, offset_y=450):
+def polar_to_rectangular(polar_coords, offset_x=150, offset_y=150):
     """
     Convert polar coordinates to rectangular, with a given x, y offset.
     """

@@ -1,4 +1,5 @@
 from __future__ import division
+import random
 
 import matrix
 from tile import Tile
@@ -6,7 +7,7 @@ from tile import Tile
 
 class Island(object):
 
-    def __init__(self, width=900, height=900):
+    def __init__(self, width=300, height=300):
         self.radius = None
         self.shore_noise = None
         self.rect_shore = None
@@ -72,33 +73,41 @@ class Island(object):
 
     def height_fill(self):
         while self.has_empty:
-            for i, row in enumerate(self.tiles):
-                for j, tile in enumerate(row):
-                    if tile and tile.height == -1:
-                        averages = []
-                        for span in range(1, 5):
-                            ring_total = 0
-                            neighbour_count = 0
-                            ring_avg = 0
-                            for x, y in matrix.find_neighbours_2D(self.tiles, (i, j), span):
-                                try:
-                                    value = self.tiles[x][y].height
-                                    # print('value: {}'.format(value))
-                                except (IndexError, AttributeError):
-                                    continue
-                                if value in (0, -1):
-                                    continue
-                                ring_total += value
-                                neighbour_count += 1
-                            if ring_total:
-                                ring_avg = ring_total/neighbour_count
-                                # averages.append(ring_avg * 9 / span ** 0.9)  # Further away == less impact
-                                averages.append(ring_avg)  # Further away == less impact
-                        if averages:
-                            # print(averages)
-                            overall = sum(averages)/len(averages)
-                            # print('overall: {}'.format(overall))
-                            tile.height = overall
+            empty_count = sum(1 if tile.height == -1 else 0 for row in self.tiles for tile in row if tile is not None)
+            print('Island has {} empty tiles'.format(empty_count))
+            i_values = list(range(len(self.tiles)))
+            random.shuffle(i_values)
+            j_values = list(range(len(self.tiles[0])))
+            random.shuffle(j_values)
+            while i_values:
+                print('\t{} tiles remaining'.format(len(i_values)))
+                i, j = i_values.pop(), j_values.pop()
+                tile = self.tiles[i][j]
+                if tile and tile.height == -1:
+                    averages = []
+                    for span in range(1, 5):
+                        ring_total = 0
+                        neighbour_count = 0
+                        ring_avg = 0
+                        for x, y in matrix.find_neighbours_2D(self.tiles, (i, j), span):
+                            try:
+                                value = self.tiles[x][y].height
+                                # print('value: {}'.format(value))
+                            except (IndexError, AttributeError):
+                                continue
+                            if value in (0, -1):
+                                continue
+                            ring_total += value
+                            neighbour_count += 1
+                        if ring_total:
+                            ring_avg = ring_total/neighbour_count
+                            # averages.append(ring_avg * 9 / span ** 0.9)  # Further away == less impact
+                            averages.append(ring_avg)  # Further away == less impact
+                    if averages:
+                        # print(averages)
+                        overall = sum(averages)/len(averages)
+                        # print('overall: {}'.format(overall))
+                        tile.height = overall
 
     @property
     def has_empty(self):

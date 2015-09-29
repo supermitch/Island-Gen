@@ -53,7 +53,7 @@ def main():
 
     args = setup_args()
 
-    generator = IslandGenerator(radius=200)
+    generator = IslandGenerator(radius=100)
 
     if not args.pygame:
         island = generator.generate_island()
@@ -61,7 +61,7 @@ def main():
     else:
         pygame.init()
         clock = pygame.time.Clock()
-        renderer = render.Renderer((900, 900))
+        renderer = render.Renderer((300, 300))
 
         result = 'regen'
         while True:
