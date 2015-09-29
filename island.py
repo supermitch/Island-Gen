@@ -85,7 +85,6 @@ class Island(object):
             print('Island has {} empty tiles'.format(empty_count))
             random.shuffle(empties)
             while empties:
-                print('\t{} tiles remaining'.format(len(empties)))
                 i, j = empties.pop()
                 tile = self.tiles[i][j]
                 if tile and tile.height == -1:
