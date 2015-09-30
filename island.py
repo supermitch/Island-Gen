@@ -99,7 +99,7 @@ class Island(object):
                                 # print('value: {}'.format(value))
                             except (IndexError, AttributeError):
                                 continue
-                            if value in (0, -1):
+                            if value in [-1,]:
                                 continue
                             ring_total += value
                             neighbour_count += 1
