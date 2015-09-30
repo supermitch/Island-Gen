@@ -77,12 +77,12 @@ class Island(object):
         while self.has_empty:
             empties = self.empties()
             empty_count = len(empties)
+            print('Island has {} empty tiles'.format(empty_count))
             if empty_count == last_empty_count:
                 attempt += 1
-                last_empty_count = empty_count
+            last_empty_count = empty_count
             if attempt > 10: break;
 
-            print('Island has {} empty tiles'.format(empty_count))
             random.shuffle(empties)
             while empties:
                 i, j = empties.pop()
